@@ -1,0 +1,6 @@
+{
+  "name": "AquaWatt — Smart Water & Energy Management",
+  "description": "IoT-powered smart water and electricity monitoring, anomaly detection, predictive conservation insights, and resource analytics platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

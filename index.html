@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      (function () {
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduce) {
+          if (typeof Element !== 'undefined' && Element.prototype && typeof Element.prototype.animate === 'function') {
+            document.documentElement.classList.add('entrance-pending');
+            window.__entranceFallback = setTimeout(function () {
+              document.documentElement.classList.remove('entrance-pending', 'entrance-active');
+            }, 3000);
+          }
+        }
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 C16 2 6 14 6 21 A10 10 0 0 0 26 21 C26 14 16 2 16 2 Z' fill='%23174A8B'/%3E%3Cpath d='M17 11 L12 19 L16 19 L15 25 L21 17 L17 17 Z' fill='%23237A57'/%3E%3C/svg%3E" />
+    <title>AquaWatt — Smart Water & Energy Management</title>
+    <meta name="description" content="IoT-powered smart water and electricity monitoring, anomaly detection, predictive conservation insights, and resource analytics platform." />
+    <meta property="og:title" content="AquaWatt — Smart Water & Energy Management" />
+    <meta property="og:description" content="IoT-powered smart water and electricity monitoring, anomaly detection, predictive conservation insights, and resource analytics platform." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#F7F9FB] text-[#17263F] antialiased selection:bg-[#174A8B] selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
