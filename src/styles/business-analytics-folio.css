@@ -1,0 +1,1066 @@
+/* ==========================================================================
+   AquaWatt Business Analytics — Scoped Folio Editorial Design System
+   All rules scoped strictly under .aw-folio-scope to avoid leaking into
+   other AquaWatt routes.
+   ========================================================================== */
+
+.aw-folio-scope {
+  --band: #174A8B;
+  --band-ink: #FFFFFF;
+  --band-muted: rgba(255, 255, 255, 0.72);
+  --band-rule: rgba(255, 255, 255, 0.22);
+
+  --paper: #F7F9FB;
+  --paper-raised: #FFFFFF;
+  --ink: #17263F;
+  --ink-muted: #526176;
+  --ink-subtle: #64748B;
+  --rule: #CBD5E1;
+  --rule-strong: #17263F;
+
+  --series-a: #174A8B;
+  --series-b: #0284C7;
+  --series-c: #237A57;
+  --series-d: #D97706;
+  --brand-band: #174A8B;
+  --accent-red: #D95338;
+  --bar-ink-over: #FFFFFF;
+
+  --heat-0: #EFF4FA;
+  --heat-1: #DBE7F6;
+  --heat-2: #B6D0EE;
+  --heat-3: #7FAFE0;
+  --heat-4: #3A76BC;
+  --heat-5: #174A8B;
+  --heat-ink-light: #17263F;
+  --heat-ink-dark: #FFFFFF;
+
+  --shadow-lg: 0 22px 54px -18px rgba(23, 38, 63, 0.22), 0 4px 14px -4px rgba(23, 38, 63, 0.12);
+
+  --gutter: 24px;
+  --margin: 48px;
+  --band-h: 44px;
+
+  --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --t-label: 11px;
+  --t-caption: 12px;
+  --t-body: 14px;
+  --t-lead: clamp(16px, 1.35vw, 19px);
+  --t-h2: clamp(28px, 3.6vw, 48px);
+  --t-display: clamp(40px, 5.6vw, 76px);
+  --t-kpi: clamp(28px, 3vw, 44px);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 150ms;
+  --t-base: 260ms;
+  --t-chart: 620ms;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  position: relative;
+}
+
+/* Global Dark Mode Sync + Explicit Dark Folio Palette */
+html.dark .aw-folio-scope,
+.aw-folio-scope[data-aw-folio-palette="dark"] {
+  --band: #112C54;
+  --band-ink: #F8FAFC;
+  --band-muted: rgba(248, 250, 252, 0.7);
+  --band-rule: rgba(248, 250, 252, 0.18);
+
+  --paper: #0B111D;
+  --paper-raised: #111A2C;
+  --ink: #E2E8F0;
+  --ink-muted: #94A3B8;
+  --ink-subtle: #64748B;
+  --rule: #243247;
+  --rule-strong: #CBD5E1;
+
+  --series-a: #38BDF8;
+  --series-b: #0EA5E9;
+  --series-c: #34D399;
+  --series-d: #FBBF24;
+  --brand-band: #2563EB;
+  --accent-red: #F87171;
+  --bar-ink-over: #FFFFFF;
+
+  --heat-0: #152136;
+  --heat-1: #1B2E4B;
+  --heat-2: #224472;
+  --heat-3: #28629E;
+  --heat-4: #3888D4;
+  --heat-5: #60A5FA;
+  --heat-ink-light: #E2E8F0;
+  --heat-ink-dark: #09111E;
+}
+
+.aw-folio-scope[data-aw-folio-palette="swiss"] {
+  --band: #1E1C1A;
+  --paper: #F4F1EC;
+  --paper-raised: #FFFFFF;
+  --ink: #171614;
+  --ink-muted: #54504B;
+  --rule: #D6D0C7;
+  --rule-strong: #171614;
+  --series-a: #174A8B;
+  --series-b: #4B5563;
+  --series-c: #237A57;
+  --series-d: #B45309;
+  --brand-band: #1E1C1A;
+  --accent-red: #D95338;
+}
+
+.aw-folio-scope[data-aw-folio-palette="ivory"] {
+  --band: #3A3229;
+  --paper: #FAF8F3;
+  --paper-raised: #FFFFFF;
+  --ink: #211D18;
+  --ink-muted: #5C554C;
+  --rule: #E4DEC9;
+  --rule-strong: #211D18;
+  --series-a: #174A8B;
+  --series-b: #7C6F61;
+  --series-c: #237A57;
+  --series-d: #C2410C;
+  --brand-band: #3A3229;
+  --accent-red: #C84B31;
+}
+
+.aw-folio-scope[data-aw-folio-palette="forest"] {
+  --band: #1A3A2E;
+  --paper: #F2F6F4;
+  --paper-raised: #FFFFFF;
+  --ink: #13251E;
+  --ink-muted: #425B51;
+  --rule: #C6D6CE;
+  --rule-strong: #13251E;
+  --series-a: #1F5E48;
+  --series-b: #174A8B;
+  --series-c: #2F855A;
+  --series-d: #B7791F;
+  --brand-band: #1A3A2E;
+  --accent-red: #C53030;
+}
+
+.aw-folio-scope[data-aw-folio-palette="terracotta"] {
+  --band: #7A3422;
+  --paper: #F9F5F2;
+  --paper-raised: #FFFFFF;
+  --ink: #271915;
+  --ink-muted: #624D47;
+  --rule: #DFD1CA;
+  --rule-strong: #271915;
+  --series-a: #174A8B;
+  --series-b: #8B5E3C;
+  --series-c: #237A57;
+  --series-d: #C05621;
+  --brand-band: #7A3422;
+  --accent-red: #B83227;
+}
+
+/* Base Typographic & Numeric Discipline */
+.aw-folio-scope .num,
+.aw-folio-scope .mono-meta,
+.aw-folio-scope .kpi-num,
+.aw-folio-scope .band-title,
+.aw-folio-scope .folio-line {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.aw-folio-scope .title,
+.aw-folio-scope h2 {
+  font-family: var(--font-heading);
+}
+
+.aw-folio-scope .skip-link {
+  position: fixed;
+  top: -80px;
+  left: 16px;
+  z-index: 400;
+  padding: 8px 14px;
+  background: var(--band);
+  color: var(--band-ink);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.aw-folio-scope .skip-link:focus {
+  top: 52px;
+}
+
+/* Top Band & Numbered Section Pager */
+.aw-folio-scope .band {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--band-h);
+  background: var(--band);
+  color: var(--band-ink);
+  z-index: 200;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--band-rule);
+}
+
+.aw-folio-scope .band-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.aw-folio-scope .band-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--band-rule);
+  color: var(--band-ink);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--t-fast) var(--ease);
+}
+.aw-folio-scope .band-back:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.aw-folio-scope .band-id {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  white-space: nowrap;
+}
+.aw-folio-scope .band-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+.aw-folio-scope .band-year {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--band-muted);
+}
+
+.aw-folio-scope .band-title {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--band-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-left: 1px solid var(--band-rule);
+  padding-left: 12px;
+  transition: opacity 0.2s var(--ease);
+}
+.aw-folio-scope .band-title.is-swapping {
+  opacity: 0.35;
+}
+
+.aw-folio-scope .band-rail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.aw-folio-scope .band-pager {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.aw-folio-scope .pager-indicator {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--band-ink);
+  pointer-events: none;
+  transform: translate3d(var(--ind-x, 0px), -50%, 0);
+  transition: transform 0.32s var(--ease);
+  z-index: 0;
+}
+
+.aw-folio-scope .band-pager button {
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--band-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: color var(--t-fast);
+  padding: 0;
+}
+.aw-folio-scope .band-pager button:hover {
+  color: var(--band-ink);
+}
+.aw-folio-scope .band-pager button[aria-current="true"] {
+  color: var(--band);
+}
+
+.aw-folio-scope .band-mobile-nav {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.aw-folio-scope .band-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aw-folio-scope .band-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--band-rule);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--band-ink);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--t-fast);
+}
+.aw-folio-scope .band-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.aw-folio-scope .band-btn .swatch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--series-b);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.aw-folio-scope .band-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+.aw-folio-scope .band-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #38BDF8;
+  transform-origin: left center;
+  transform: scaleX(var(--scroll-p, 0));
+}
+
+/* Spread Container & 12-Col Grid */
+.aw-folio-scope .main-scroll {
+  padding-top: var(--band-h);
+}
+
+.aw-folio-scope .spread {
+  position: relative;
+  min-height: calc(100svh - var(--band-h));
+  padding: 40px var(--margin) 56px;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 28px;
+  max-width: 1520px;
+  margin: 0 auto;
+}
+
+/* Vertical center spine on desktop spreads where layout splits cleanly 6/6 or 5/7 -> subtle rule */
+.aw-folio-scope .spread[data-spine="true"]::after {
+  content: '';
+  position: absolute;
+  top: 84px;
+  bottom: 44px;
+  left: 50%;
+  width: 1px;
+  background: var(--rule);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.aw-folio-scope .folio-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.aw-folio-scope .grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  align-items: start;
+}
+
+.aw-folio-scope .grid-12 > * {
+  min-width: 0;
+}
+
+.aw-folio-scope .span-12 { grid-column: span 12; }
+.aw-folio-scope .span-8  { grid-column: span 8; }
+.aw-folio-scope .span-7  { grid-column: span 7; }
+.aw-folio-scope .span-6  { grid-column: span 6; }
+.aw-folio-scope .span-5  { grid-column: span 5; }
+.aw-folio-scope .span-4  { grid-column: span 4; }
+.aw-folio-scope .span-3  { grid-column: span 3; }
+
+/* Headlines, Kickers & Editorial Typography */
+.aw-folio-scope .kicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.aw-folio-scope .provenance-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.aw-folio-scope .provenance-mark.is-physical {
+  color: var(--series-c);
+}
+.aw-folio-scope .provenance-mark.is-demo {
+  color: var(--series-d);
+}
+.aw-folio-scope .provenance-mark i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+.aw-folio-scope .title-mask {
+  overflow: hidden;
+  padding-bottom: 4px;
+}
+
+.aw-folio-scope .title {
+  font-size: var(--t-display);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin: 0 0 18px;
+  color: var(--ink);
+}
+.aw-folio-scope .title-md {
+  font-size: var(--t-h2);
+  line-height: 1.04;
+}
+
+.aw-folio-scope .lead {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  color: var(--ink-muted);
+  max-width: 56ch;
+  margin: 0 0 18px;
+}
+
+.aw-folio-scope .rule-hair {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 18px 0;
+}
+
+.aw-folio-scope .rule-strong {
+  border: 0;
+  border-top: 2px solid var(--rule-strong);
+  margin: 18px 0;
+}
+
+/* Segmented Controls & Interactive Filter Buttons (Clean Architectural Style, No Pill Clutter) */
+.aw-folio-scope .seg-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--rule);
+  background: var(--paper-raised);
+  border-radius: 4px;
+  padding: 2px;
+  gap: 2px;
+}
+.aw-folio-scope .seg-btn {
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.aw-folio-scope .seg-btn:hover {
+  color: var(--ink);
+}
+.aw-folio-scope .seg-btn[aria-pressed="true"],
+.aw-folio-scope .seg-btn.is-active {
+  background: var(--band);
+  color: var(--band-ink);
+  font-weight: 600;
+}
+
+/* KPI 4-Col Horizontal Strip */
+.aw-folio-scope .kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+}
+.aw-folio-scope .kpi-cell {
+  padding: 18px 18px 18px 0;
+  border-right: 1px solid var(--rule);
+}
+.aw-folio-scope .kpi-cell:not(:first-child) {
+  padding-left: 18px;
+}
+.aw-folio-scope .kpi-cell:last-child {
+  border-right: 0;
+}
+.aw-folio-scope .kpi-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+.aw-folio-scope .kpi-num {
+  font-size: var(--t-kpi);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 6px 0 4px;
+  color: var(--ink);
+}
+.aw-folio-scope .kpi-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* Figure Wrapper & Accessible Table Toggle */
+.aw-folio-scope .figure-block {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  padding: 18px;
+  border-radius: 4px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.aw-folio-scope .fig-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.aw-folio-scope .fig-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.aw-folio-scope .fig-sub {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.aw-folio-scope .fig-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  margin-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  color: var(--ink-muted);
+  flex-wrap: wrap;
+}
+
+.aw-folio-scope .fig-table-toggle {
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.aw-folio-scope .fig-table-toggle:hover {
+  background: var(--paper);
+}
+
+.aw-folio-scope .fig-data-table-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+  border-top: 1px solid var(--rule);
+  padding-top: 10px;
+}
+
+.aw-folio-scope .fig-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.aw-folio-scope .fig-data-table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.aw-folio-scope .fig-data-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+.aw-folio-scope .fig-data-table td.num,
+.aw-folio-scope .fig-data-table th.num {
+  text-align: right;
+}
+
+/* Folio Interactive Vertical KPI Columns (Full Unclipped Values + Responsive Grid) */
+.aw-folio-scope .kbar-scroll {
+  overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+.aw-folio-scope .kbar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+.aw-folio-scope .kbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.aw-folio-scope .kbar-track {
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  gap: 6px;
+  border-bottom: 1.5px solid var(--rule-strong);
+  padding-top: 4px;
+}
+.aw-folio-scope .kbar-top-val {
+  font-family: var(--font-heading);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-weight: 800;
+  font-size: clamp(14px, 1.55vw, 20px);
+  line-height: 1.1;
+  color: var(--ink);
+  text-align: center;
+  white-space: nowrap;
+}
+.aw-folio-scope .kbar-fill {
+  position: relative;
+  width: 100%;
+  min-height: 18px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.55s var(--ease), filter var(--t-fast);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 6px 4px;
+}
+.aw-folio-scope .kbar-item:hover .kbar-fill,
+.aw-folio-scope .kbar-item:focus-visible .kbar-fill,
+.aw-folio-scope .kbar-item.is-active .kbar-fill {
+  filter: brightness(1.06);
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.aw-folio-scope .kbar-item.is-active .kbar-top-val {
+  color: var(--band);
+}
+.aw-folio-scope .kbar-inner-share {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bar-ink-over);
+  opacity: 0.92;
+  white-space: nowrap;
+}
+.aw-folio-scope .kbar-meta {
+  padding-top: 8px;
+  min-width: 0;
+}
+.aw-folio-scope .kbar-label-name {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+  word-break: break-word;
+}
+.aw-folio-scope .kbar-label-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+/* Scrollytelling Two-Column Stage */
+.aw-folio-scope .scrolly-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px;
+  align-items: start;
+}
+.aw-folio-scope .scrolly-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.aw-folio-scope .scrolly-step {
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  background: var(--paper-raised);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.aw-folio-scope .scrolly-step.is-active {
+  border-color: var(--band);
+  box-shadow: 0 0 0 1px var(--band);
+}
+.aw-folio-scope .scrolly-sticky {
+  position: sticky;
+  top: 64px;
+}
+
+/* Heatmap Responsive Wrapper — Fix Image #1 Narrow Clipping */
+.aw-folio-scope .heat-scroll {
+  overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+.aw-folio-scope .heat-grid {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: separate;
+  border-spacing: 3px;
+}
+.aw-folio-scope .heat-grid th {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  padding: 6px 6px;
+  text-align: center;
+  white-space: nowrap;
+}
+.aw-folio-scope .heat-grid th.heat-corner,
+.aw-folio-scope .heat-grid td.heat-row-hdr {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--paper-raised);
+  text-align: left;
+  padding-right: 12px;
+  min-width: 155px;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.aw-folio-scope .heat-sort-btn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.aw-folio-scope .heat-sort-btn:hover {
+  color: var(--ink);
+  background: var(--paper);
+}
+.aw-folio-scope .heat-cell {
+  border: 0;
+  width: 100%;
+  height: 36px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--t-fast), outline var(--t-fast), transform var(--t-fast);
+}
+.aw-folio-scope .heat-cell:hover,
+.aw-folio-scope .heat-cell:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+  transform: scale(1.03);
+}
+.aw-folio-scope .heat-cell.is-dim {
+  opacity: 0.24;
+}
+
+/* Mobile Milestone List Fallback (prevents overlapping SVG text on < 640px) */
+.aw-folio-scope .tl-svg-wrap {
+  display: block;
+}
+.aw-folio-scope .tl-mobile-list {
+  display: none;
+}
+
+/* Shared Floating Tooltip */
+.aw-folio-scope .folio-tooltip {
+  position: fixed;
+  z-index: 500;
+  pointer-events: none;
+  max-width: 260px;
+  padding: 9px 11px;
+  background: var(--ink);
+  color: var(--paper-raised);
+  border-radius: 4px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  box-shadow: var(--shadow-lg);
+}
+.aw-folio-scope .folio-tooltip .tt-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.aw-folio-scope .folio-tooltip .tt-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  opacity: 0.85;
+}
+
+/* Grid Overlay ('G' shortcut) */
+.aw-folio-scope .grid-overlay {
+  position: fixed;
+  inset: var(--band-h) var(--margin) 0 var(--margin);
+  max-width: 1520px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+  pointer-events: none;
+  z-index: 150;
+}
+.aw-folio-scope .grid-overlay span {
+  background: rgba(23, 74, 139, 0.08);
+  border-left: 1px dashed rgba(23, 74, 139, 0.25);
+  border-right: 1px dashed rgba(23, 74, 139, 0.25);
+  height: 100%;
+}
+
+/* Reveal Animations */
+@keyframes aw-folio-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.aw-folio-scope .aw-reveal {
+  animation: aw-folio-fade-up 0.45s var(--ease) both;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints (Laptop 1280, Tablet 768, Mobile 390)
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .aw-folio-scope {
+    --margin: 28px;
+    --gutter: 18px;
+  }
+  .aw-folio-scope .band-title {
+    display: none;
+  }
+  .aw-folio-scope .scrolly-grid {
+    grid-template-columns: 1fr;
+  }
+  .aw-folio-scope .scrolly-sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 1024px) {
+  .aw-folio-scope .span-8,
+  .aw-folio-scope .span-7,
+  .aw-folio-scope .span-6,
+  .aw-folio-scope .span-5,
+  .aw-folio-scope .span-4,
+  .aw-folio-scope .span-3 {
+    grid-column: span 12;
+  }
+  .aw-folio-scope .spread[data-spine="true"]::after {
+    display: none;
+  }
+  .aw-folio-scope .kpi-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .aw-folio-scope .kpi-cell:nth-child(2n) {
+    border-right: 0;
+  }
+  .aw-folio-scope .kpi-cell:nth-child(n + 3) {
+    border-top: 1px solid var(--rule);
+    padding-left: 0;
+  }
+  .aw-folio-scope .kpi-cell:nth-child(4) {
+    padding-left: 18px;
+  }
+}
+
+@media (max-width: 680px) {
+  .aw-folio-scope {
+    --margin: 14px;
+    --gutter: 14px;
+    --band-h: 48px;
+  }
+  .aw-folio-scope .band {
+    padding: 0 10px;
+    gap: 6px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .aw-folio-scope .band-pager {
+    display: none;
+  }
+  .aw-folio-scope .band-mobile-nav {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    min-width: 0;
+  }
+  .aw-folio-scope .band-year {
+    display: none;
+  }
+  .aw-folio-scope .spread {
+    min-height: auto;
+    padding: 24px var(--margin) 36px;
+    gap: 18px;
+  }
+  .aw-folio-scope .figure-block {
+    padding: 14px;
+  }
+  .aw-folio-scope .kbar-grid {
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    gap: 8px;
+  }
+  .aw-folio-scope .kbar-track {
+    height: 175px;
+  }
+  .aw-folio-scope .kpi-strip {
+    grid-template-columns: 1fr;
+  }
+  .aw-folio-scope .kpi-cell {
+    border-right: 0;
+    border-top: 1px solid var(--rule);
+    padding: 14px 0 !important;
+  }
+  .aw-folio-scope .kpi-cell:first-child {
+    border-top: 0;
+  }
+  .aw-folio-scope .heat-grid th.heat-corner,
+  .aw-folio-scope .heat-grid td.heat-row-hdr {
+    min-width: 120px;
+    max-width: 132px;
+    font-size: 11px;
+  }
+  .aw-folio-scope .tl-svg-wrap {
+    display: none;
+  }
+  .aw-folio-scope .tl-mobile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aw-folio-scope *,
+  .aw-folio-scope *::before,
+  .aw-folio-scope *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

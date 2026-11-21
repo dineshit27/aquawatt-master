@@ -200,7 +200,7 @@ export function HighlightTestimonialSection({
       data-index={current}
       data-phase={phase}
       aria-roledescription="carousel"
-      aria-label="Customer testimonials"
+      aria-label="Engineering validation notes"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -273,7 +273,7 @@ export function HighlightTestimonialSection({
           <div className="flex items-center gap-2 shrink-0">
             <div
               role="group"
-              aria-label="Choose a testimonial"
+              aria-label="Choose an engineering note"
               onKeyDown={onKeyDown}
               className="flex items-center gap-1.5"
             >
@@ -282,7 +282,7 @@ export function HighlightTestimonialSection({
                   key={entry.author + i}
                   type="button"
                   data-dot={i}
-                  aria-label={`Show testimonial ${i + 1} of ${count}`}
+                  aria-label={`Show note ${i + 1} of ${count}`}
                   aria-pressed={i === current}
                   onClick={() => go(i)}
                   className={`h-1.5 rounded-full outline-none transition-[width,background-color] duration-300 motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card cursor-pointer ${
@@ -296,7 +296,7 @@ export function HighlightTestimonialSection({
             <button
               type="button"
               data-prev
-              aria-label="Previous testimonial"
+              aria-label="Previous note"
               onClick={() => go(current - 1)}
               className="inline-flex size-7 items-center justify-center rounded-full border border-border text-muted-foreground outline-none transition-colors motion-reduce:transition-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >
@@ -305,7 +305,7 @@ export function HighlightTestimonialSection({
             <button
               type="button"
               data-next
-              aria-label="Next testimonial"
+              aria-label="Next note"
               onClick={() => go(current + 1)}
               className="inline-flex size-7 items-center justify-center rounded-full border border-border text-muted-foreground outline-none transition-colors motion-reduce:transition-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
             >

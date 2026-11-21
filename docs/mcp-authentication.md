@@ -4,9 +4,9 @@ This document details the authentication and authorization architecture implemen
 
 ---
 
-## 1. Architectural Model: OAuth 2.1 Protected Resource (RFC 9728)
+## 1. Architectural Model: RFC 9728 Protected Resource & Supabase Bearer JWT
 
-AquaWatt MCP implements the **OAuth 2.1 / RFC 9728 Protected Resource** pattern defined in the official Model Context Protocol authorization specification:
+AquaWatt MCP implements **Supabase Bearer JWT Verification paired with RFC 9728 Protected Resource Metadata Discovery** (note: it is a Resource Server only and does **not** implement a full OAuth 2.1 interactive authorization code or PKCE flow):
 
 ```
 ┌────────────────────────────────┐

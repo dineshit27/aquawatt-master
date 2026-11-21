@@ -287,7 +287,7 @@ describe('Stage 5: AquaWatt MCP Resources & Reusable Prompts Verification', () =
 
     const status = res.status;
     const text = await res.text();
-    let json: any = null;
+    let json: any;
     const match = text.match(/data: (\{.*\})/);
     if (match) {
       json = JSON.parse(match[1]);
@@ -326,7 +326,7 @@ describe('Stage 5: AquaWatt MCP Resources & Reusable Prompts Verification', () =
 
     const status = res.status;
     const text = await res.text();
-    let json: any = null;
+    let json: any;
     const match = text.match(/data: (\{.*\})/);
     if (match) {
       json = JSON.parse(match[1]);

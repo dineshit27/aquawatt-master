@@ -53,7 +53,7 @@ export const AlertsPanel: React.FC = () => {
             </span>
           )}
           <span
-            title="Threshold anomaly detection across ESP32 flow pulses and CT current channels"
+            title="Threshold anomaly detection across ESP32 FS-S401 flow pulses and simulated INA219 channels"
             className="text-slate-400 hover:text-slate-600 cursor-help"
           >
             <Info className="w-3.5 h-3.5" />

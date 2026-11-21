@@ -323,7 +323,7 @@ export const VelaHeroSection: React.FC<{ onScrollLearnMore?: () => void }> = ({
               </div>
 
               <p className="vela-caption">
-                Direct engineering desk for ESP32 flow &amp; CT sensor
+                Direct engineering notes for ESP32 flow &amp; INA219
                 <br />
                 wiring, MQTT setup, and anomaly threshold support.
               </p>
@@ -367,8 +367,8 @@ export const VelaHeroSection: React.FC<{ onScrollLearnMore?: () => void }> = ({
                 <div className="vela-stat-lbl">Serial baud diagnostics</div>
               </div>
               <div>
-                <div className="vela-stat-val">&lt; 2 hrs</div>
-                <div className="vela-stat-lbl">Pro ticket response target</div>
+                <div className="vela-stat-val">FS-S401</div>
+                <div className="vela-stat-lbl">Operational flow sensor</div>
               </div>
             </div>
 

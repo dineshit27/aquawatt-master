@@ -4,6 +4,7 @@ import { AppHeader } from '../navigation/AppHeader';
 import { Footer } from '../navigation/Footer';
 import { ToastContainer } from '../common/ToastContainer';
 import { ScrollProgress } from '../common/ScrollProgress';
+import { useTheme } from '../../context/ThemeContext';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -20,8 +21,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   title,
   subtitle,
 }) => {
+  const { theme, palette, showGridOverlay } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#F7F9FB] dark:bg-[#070B13] text-[#17263F] dark:text-[#E2E8F0] selection:bg-[#174A8B] selection:text-white transition-colors">
+    <div
+      data-aw-surface-palette={palette}
+      className="min-h-screen flex flex-col bg-[var(--aw-canvas)] dark:bg-[#070B13] text-[#17263F] dark:text-[#E2E8F0] selection:bg-[#174A8B] selection:text-white transition-colors"
+    >
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#174A8B] focus:text-white focus:text-xs focus:font-semibold focus:shadow-lg"
@@ -30,6 +37,26 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       </a>
       <ScrollProgress />
       <ToastContainer />
+
+      {showGridOverlay && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 pointer-events-none z-40 flex justify-center md:pl-[72px]"
+        >
+          <div className="max-w-7xl w-full h-full px-4 sm:px-6 lg:px-8 grid grid-cols-12 gap-4 sm:gap-6">
+            {Array.from({ length: 12 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="h-full border-x"
+                style={{
+                  borderColor: isDark ? 'rgba(56, 189, 248, 0.16)' : 'var(--aw-accent-ring)',
+                  backgroundColor: isDark ? 'rgba(56, 189, 248, 0.035)' : 'var(--aw-accent-soft)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 flex">
         {/* Sticky Vertical Sidebar */}
@@ -45,7 +72,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           {/* Optional Uncompressed Full-Width Hero */}
           {hero && <div className="w-full">{hero}</div>}
 
-          {/* Pale Grey Canvas with Large White Workspace */}
+          {/* Canvas with Palette Surface */}
           <main
             id="main-content"
             tabIndex={-1}

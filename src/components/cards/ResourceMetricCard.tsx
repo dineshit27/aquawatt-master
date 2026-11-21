@@ -38,10 +38,10 @@ export const ResourceMetricCard: React.FC<ResourceMetricCardProps> = ({
   const hardwareTooltip = isWater
     ? isPhysical
       ? 'FS-S401 turbine flow sensor with 16x2 LCD physical telemetry via Supabase'
-      : 'YF-S201 pulse flow sensor stream simulated via ESP32 GPIO interrupt'
+      : 'FS-S401 pulse flow sensor profile simulated via ESP32 GPIO interrupt'
     : isPhysical
     ? electricityData?.statusNote || 'INA219 DC current/voltage sensor pending bench calibration'
-    : 'SCT-013 split-core CT sensor simulated at 115200 baud';
+    : 'INA219 DC power module simulated for demo (physical calibration pending)';
 
   const handleTestValve = () => {
     if (valveState === 'open') {
@@ -326,9 +326,9 @@ export const ResourceMetricCard: React.FC<ResourceMetricCardProps> = ({
         ) : (
           <>
             <div className="flex items-center gap-2 tabular-nums">
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">THD</span>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400">Module</span>
               <span className="text-[11px] font-mono font-medium text-slate-700 dark:text-slate-300">
-                {isPowerUntested ? 'Untested' : '1.4%'}
+                {isPowerUntested ? 'INA219 (Calibration pending)' : 'INA219 DC (Demo)'}
               </span>
             </div>
 

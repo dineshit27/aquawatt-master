@@ -54,8 +54,8 @@ export interface SensorDevice {
   lastSync: string;
   isSimulated: boolean;
   deviceEui?: string;
-  waterSensorType?: 'FS-S401' | 'YF-S201' | 'none' | 'other';
-  powerSensorType?: 'INA219' | 'SCT-013' | 'none' | 'other';
+  waterSensorType?: 'FS-S401' | 'none' | 'other';
+  powerSensorType?: 'INA219' | 'none' | 'other';
   displayType?: '16x2_LCD' | 'none' | 'other';
 }
 

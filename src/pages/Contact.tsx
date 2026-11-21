@@ -3,32 +3,26 @@ import { AppLayout } from '../components/layout/AppLayout';
 import { useApp } from '../context/AppContext';
 import {
   Mail,
-  Phone,
+  Terminal,
   MapPin,
   Clock,
   Send,
   CheckCircle2,
-  AlertCircle,
-  Headphones,
   Search,
   ChevronDown,
-  ShieldCheck,
-  Building2,
 } from 'lucide-react';
 import { FAQ_ITEMS } from '../data/mockData';
 import { VelaHeroSection } from '../components/contact/VelaHeroSection';
-
-interface FormState {
-  fullName: string;
-  email: string;
-  category: string;
-  subject: string;
-  message: string;
-}
+import {
+  validateContactForm,
+  createSimulatedSupportTicket,
+  filterFaqs,
+  type ContactFormState,
+} from '../services/supportService';
 
 export const Contact: React.FC = () => {
   const { showToast } = useApp();
-  const [form, setForm] = useState<FormState>({
+  const [form, setForm] = useState<ContactFormState>({
     fullName: '',
     email: '',
     category: 'Hardware & Sensor Setup',
@@ -36,48 +30,24 @@ export const Contact: React.FC = () => {
     message: '',
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormState, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState<string | null>(null);
   const [searchFaq, setSearchFaq] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
-  const validate = (): boolean => {
-    const newErrors: Partial<Record<keyof FormState, string>> = {};
-
-    if (!form.fullName.trim() || form.fullName.trim().length < 2) {
-      newErrors.fullName = 'Full name must be at least 2 characters';
-    }
-
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.email = 'Please provide a valid email address';
-    }
-
-    if (!form.subject.trim()) {
-      newErrors.subject = 'Please enter an inquiry subject';
-    }
-
-    if (!form.message.trim() || form.message.trim().length < 10) {
-      newErrors.message = 'Inquiry message must contain at least 10 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    const validationErrors = validateContactForm(form);
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) return;
 
     setIsSubmitting(true);
     setTimeout(() => {
+      const ticket = createSimulatedSupportTicket(form);
       setIsSubmitting(false);
-      setSubmittedMessage(
-        `Thank you, ${form.fullName}. Your ticket regarding "${form.subject}" has been logged in our demonstration system (Ticket #AQW-${Math.floor(
-          10000 + Math.random() * 90000
-        )}).`
-      );
-      showToast('Support ticket logged successfully (simulation)', 'success');
+      setSubmittedMessage(ticket.confirmationMessage);
+      showToast(`Support inquiry logged (local simulation #${ticket.ticketId})`, 'success');
       setForm({
         fullName: '',
         email: '',
@@ -86,14 +56,10 @@ export const Contact: React.FC = () => {
         message: '',
       });
       setErrors({});
-    }, 1200);
+    }, 600);
   };
 
-  const filteredFaqs = FAQ_ITEMS.filter(
-    item =>
-      item.question.toLowerCase().includes(searchFaq.toLowerCase()) ||
-      item.answer.toLowerCase().includes(searchFaq.toLowerCase())
-  );
+  const filteredFaqs = filterFaqs(FAQ_ITEMS, searchFaq);
 
   return (
     <AppLayout
@@ -111,16 +77,16 @@ export const Contact: React.FC = () => {
         <div id="contact-channels" className="grid grid-cols-1 sm:grid-cols-3 gap-4 scroll-mt-6">
           <div className="p-5 rounded-xl bg-white dark:bg-[#121B2B] border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
             <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-sky-950 text-[#174A8B] dark:text-sky-400 flex items-center justify-center mb-3">
-              <Phone className="w-4 h-4" />
+              <Terminal className="w-4 h-4" />
             </div>
             <h3 className="text-xs font-bold font-heading text-slate-900 dark:text-white">
-              Testbench Engineering Line
+              Testbench Serial &amp; Repo
             </h3>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Simulated leak alert tuning, FS-S401 wiring checks, and serial/MQTT diagnostics.
+              FS-S401 wiring notes, GPIO34 interrupt debugging, and MQTT schema documentation.
             </p>
             <p className="text-xs font-mono font-bold text-[#174A8B] dark:text-sky-400 mt-3">
-              +91 80 4120 7700 (Lab Desk)
+              GitHub · dineshit27/aquawatt-master
             </p>
           </div>
 
@@ -132,10 +98,10 @@ export const Contact: React.FC = () => {
               Engineering Support Desk
             </h3>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              ESP32 pulse flow calibration, CT current sensor setup, and MQTT telemetry.
+              ESP32 pulse flow calibration, INA219 DC setup, and Supabase schema questions.
             </p>
             <p className="text-xs font-mono font-bold text-[#237A57] dark:text-emerald-400 mt-3">
-              support@aquawatt.io
+              support@aquawatt.io (Project Mailbox)
             </p>
           </div>
 
@@ -144,13 +110,13 @@ export const Contact: React.FC = () => {
               <Clock className="w-4 h-4" />
             </div>
             <h3 className="text-xs font-bold font-heading text-slate-900 dark:text-white">
-              Guaranteed SLA Response
+              Best-Effort Prototype Support
             </h3>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Standard Pro tickets responded in &lt; 2 hours. Enterprise monitored 24/7.
+              Inquiries on this page simulate local ticket confirmation; live backend ticketing is not wired.
             </p>
             <p className="text-xs font-mono text-slate-600 dark:text-slate-400 mt-3">
-              99.98% Gateway Uptime
+              Local Simulation · No SLA Promise
             </p>
           </div>
         </div>
@@ -166,7 +132,7 @@ export const Contact: React.FC = () => {
               Send an Inquiry or Incident Report
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              All inquiries are routed directly to on-call telemetry engineers.
+              Validates your message and generates a simulated reference ticket in the browser.
             </p>
 
             {submittedMessage ? (

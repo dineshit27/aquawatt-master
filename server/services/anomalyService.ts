@@ -99,8 +99,8 @@ export class AnomalyService {
     let currentFlowStreakMs = 0;
     let maxFlowStreakMs = 0;
     let lastTime: number | null = null;
-    let nonZeroFlows: number[] = [];
-    let nightFlows: number[] = [];
+    const nonZeroFlows: number[] = [];
+    const nightFlows: number[] = [];
 
     for (const r of sorted) {
       const time = new Date(r.recorded_at).getTime();

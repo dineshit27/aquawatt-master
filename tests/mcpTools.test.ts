@@ -291,7 +291,7 @@ describe('Stage 4: AquaWatt 14 MCP Domain Tools Verification', () => {
 
     const status = res.status;
     const text = await res.text();
-    let json: any = null;
+    let json: any;
     const match = text.match(/data: (\{.*\})/);
     if (match) {
       json = JSON.parse(match[1]);

@@ -1,14 +1,14 @@
 -- ==============================================================================
 -- AquaWatt IoT Telemetry Platform - Supabase Database Schema Migration
 -- Migration: 20261106000000_create_aquawatt_schema.sql
--- 
+--
 -- TARGET HARDWARE ARCHITECTURE:
 -- - Microcontroller: ESP32 (Wi-Fi 802.11 b/g/n + MQTT client)
--- - Water Flow Sensor: FS-S401 Hall-effect turbine pulse sensor (Operational)
+-- - Water Flow Sensor: FS-S401 Hall-effect turbine pulse sensor on GPIO34 (Operational)
 -- - Display: 16x2 Character LCD (HD44780 / I2C backpack) (Operational)
--- - DC Current Sensor: INA219 High-side I2C current/voltage monitor (Untested/In development)
---   * NOTE: Voltage, current and power columns are explicitly NULLABLE.
---   * Do NOT populate fake INA219 values until hardware is calibrated.
+-- - DC Current Sensor: INA219 High-side I2C current/voltage monitor (Pending Calibration)
+--   * NOTE: Voltage, current, power, line_pressure_psi, and water_temp_c columns
+--     are explicitly NULLABLE. Do NOT populate fake values before sensor calibration.
 --
 -- SECURITY & ACCESS CONTROL:
 -- - Row Level Security (RLS) is ENABLED on all tables.
@@ -16,6 +16,9 @@
 -- - Ingestion: Production ESP32 telemetry will be ingested via an MQTT Broker bridge
 --   using Supabase Service Role credentials or an Edge Function with device auth tokens.
 --   Browser anonymous clients CANNOT insert readings without authenticated ownership.
+--
+-- Run this complete script directly inside the Supabase SQL Editor:
+-- https://supabase.com/dashboard/project/_/sql
 -- ==============================================================================
 
 -- 1. EXTENSIONS
@@ -64,7 +67,7 @@ CREATE TABLE IF NOT EXISTS public.sensor_readings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   device_id UUID NOT NULL REFERENCES public.devices(id) ON DELETE CASCADE,
   recorded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  
+
   -- FS-S401 Water Flow Sensor telemetry (Operational)
   pulse_count INTEGER DEFAULT 0 CHECK (pulse_count >= 0),
   flow_rate_lpm NUMERIC(8, 2) NOT NULL DEFAULT 0.00 CHECK (flow_rate_lpm >= 0),
@@ -74,7 +77,7 @@ CREATE TABLE IF NOT EXISTS public.sensor_readings (
   line_pressure_psi NUMERIC(6, 2) CHECK (line_pressure_psi IS NULL OR line_pressure_psi >= 0),
   water_temp_c NUMERIC(5, 2),
 
-  -- INA219 DC Current / Voltage Monitor telemetry (Untested / In development)
+  -- INA219 DC Current / Voltage Monitor telemetry (Pending Calibration)
   -- IMPORTANT: These columns are NULLABLE and must remain NULL until INA219 hardware is tested.
   voltage_v NUMERIC(8, 3) CHECK (voltage_v IS NULL OR voltage_v >= 0),
   current_a NUMERIC(8, 3),
@@ -83,7 +86,7 @@ CREATE TABLE IF NOT EXISTS public.sensor_readings (
   daily_total_kwh NUMERIC(12, 4) CHECK (daily_total_kwh IS NULL OR daily_total_kwh >= 0),
   monthly_total_kwh NUMERIC(12, 4) CHECK (monthly_total_kwh IS NULL OR monthly_total_kwh >= 0),
   power_factor NUMERIC(4, 3) CHECK (power_factor IS NULL OR (power_factor >= -1 AND power_factor <= 1)),
-  
+
   -- Sensor diagnostic notes
   sensor_notes TEXT DEFAULT 'FS-S401 Active · INA219 Pending Hardware Calibration',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -114,7 +117,7 @@ CREATE INDEX IF NOT EXISTS idx_sensor_readings_device_time ON public.sensor_read
 CREATE INDEX IF NOT EXISTS idx_sensor_readings_recorded_at ON public.sensor_readings(recorded_at DESC);
 CREATE INDEX IF NOT EXISTS idx_alerts_device_status ON public.alerts(device_id, is_resolved, triggered_at DESC);
 
--- 7. AUTOMATIC TIMESTAMP UPDATERS
+-- 7. AUTOMATIC TIMESTAMP & PROFILE PROVISIONING TRIGGERS
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -132,6 +135,33 @@ DROP TRIGGER IF EXISTS set_devices_updated_at ON public.devices;
 CREATE TRIGGER set_devices_updated_at
   BEFORE UPDATE ON public.devices
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name, email, facility_name)
+  VALUES (
+    NEW.id,
+    NULLIF(TRIM(COALESCE(NEW.raw_user_meta_data ->> 'full_name', '')), ''),
+    NEW.email,
+    COALESCE(
+      NULLIF(TRIM(COALESCE(NEW.raw_user_meta_data ->> 'facility_name', '')), ''),
+      'AquaWatt Facility Console'
+    )
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- 8. ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -225,18 +255,18 @@ CREATE POLICY "Users can insert alerts for own devices"
 
 -- 9. REALTIME PUBLICATION SETUP
 -- Enables Supabase Realtime for sensor_readings and alerts so connected clients
--- receive live hardware events as the ESP32 publishes them.
+-- receive live hardware events as the ESP32 MQTT bridge publishes them.
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_publication_tables 
+    SELECT 1 FROM pg_publication_tables
     WHERE pubname = 'supabase_realtime' AND tablename = 'sensor_readings'
   ) THEN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.sensor_readings;
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM pg_publication_tables 
+    SELECT 1 FROM pg_publication_tables
     WHERE pubname = 'supabase_realtime' AND tablename = 'alerts'
   ) THEN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.alerts;
@@ -245,8 +275,12 @@ END $$;
 
 -- ==============================================================================
 -- 10. OPTIONAL TESTBENCH SEEDING HELPER (RUN IN SQL EDITOR TO POPULATE A TEST DEVICE)
--- Uncomment and replace 'YOUR_USER_UUID' with your auth.uid() if you wish to seed
--- a physical ESP32 testbench device before connecting the physical microcontroller.
+-- NOTE: Because the Supabase SQL Editor executes as a privileged SQL role without
+-- a browser user JWT, auth.uid() evaluates to NULL there.
+-- Replace 'YOUR_AUTH_USER_UUID' below with an existing user UUID from
+-- Authentication > Users before uncommenting and running.
+-- Physical boundary rule: line_pressure_psi, water_temp_c, and all 7 INA219
+-- columns remain explicitly NULL because those sensors are not yet connected/calibrated.
 -- ==============================================================================
 /*
 INSERT INTO public.devices (
@@ -254,7 +288,7 @@ INSERT INTO public.devices (
   water_sensor_type, power_sensor_type, display_type, firmware_version
 ) VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-  auth.uid(),
+  'YOUR_AUTH_USER_UUID'::uuid,
   'ESP32-NODE-01',
   'ESP32 Testbench Lab Node (FS-S401 & 16x2 LCD)',
   'combo_node',
@@ -266,25 +300,29 @@ INSERT INTO public.devices (
   'v1.0.0-esp32'
 ) ON CONFLICT (device_eui) DO NOTHING;
 
--- Initial physical test reading (FS-S401 active; INA219 fields NULL as untested)
+-- Initial physical test reading (FS-S401 active; unverified/unconnected fields NULL)
 INSERT INTO public.sensor_readings (
-  device_id, recorded_at, flow_rate_lpm, current_liters, daily_total_liters,
-  monthly_total_liters, line_pressure_psi, water_temp_c,
-  voltage_v, current_a, power_w, active_power_kw, daily_total_kwh, sensor_notes
+  device_id, recorded_at, pulse_count, flow_rate_lpm, current_liters,
+  daily_total_liters, monthly_total_liters, line_pressure_psi, water_temp_c,
+  voltage_v, current_a, power_w, active_power_kw, daily_total_kwh,
+  monthly_total_kwh, power_factor, sensor_notes
 ) VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   now(),
+  240,
   2.40,
   12.80,
   145.20,
   145.20,
-  52.1,
-  21.4,
-  NULL, -- INA219 DC voltage: Untested / Pending
-  NULL, -- INA219 DC current: Untested / Pending
-  NULL, -- INA219 DC power: Untested / Pending
-  NULL, -- Active power: Untested / Pending
-  NULL, -- Energy total: Untested / Pending
-  'FS-S401 calibrated flow reading · INA219 pending test'
+  NULL, -- Line pressure sensor: Planned / Not connected
+  NULL, -- Water temperature sensor: Planned / Not connected
+  NULL, -- INA219 DC voltage: Pending calibration
+  NULL, -- INA219 DC current: Pending calibration
+  NULL, -- INA219 DC power: Pending calibration
+  NULL, -- Active power: Pending calibration
+  NULL, -- Daily energy total: Pending calibration
+  NULL, -- Monthly energy total: Pending calibration
+  NULL, -- Power factor: Pending calibration
+  'FS-S401 calibrated flow reading · INA219 & auxiliary sensors NULL'
 );
 */

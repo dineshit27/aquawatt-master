@@ -474,9 +474,9 @@ export const ZaplineHeroSection: React.FC = () => {
                     <Bell size={13} />
                   </span>
                   <div className="zap-user-chip">
-                    <span className="zap-user-avatar">AS</span>
-                    <span className="zap-user-name">Aarav S.</span>
-                    <span className="zap-user-addr">#ESP32-04</span>
+                    <span className="zap-user-avatar">TB</span>
+                    <span className="zap-user-name">Testbench UI</span>
+                    <span className="zap-user-addr">#ESP32-NODE-01</span>
                   </div>
                 </div>
               </div>
@@ -488,20 +488,20 @@ export const ZaplineHeroSection: React.FC = () => {
                   <div className="zap-stats-row zap-anim-dash-item">
                     <div className="zap-stat-card">
                       <div className="zap-stat-label">
-                        Water conserved{' '}
-                        <span className="zap-stat-sub">(since inception)</span>
+                        Daily demo inflow{' '}
+                        <span className="zap-stat-sub">(simulated)</span>
                       </div>
                       <div className="zap-stat-value-row">
-                        <span className="zap-stat-value">142,840 L</span>
-                        <span className="zap-delta-pos">+14.2%</span>
+                        <span className="zap-stat-value">384 L</span>
+                        <span className="zap-delta-pos">-14.2%</span>
                       </div>
                     </div>
 
                     <div className="zap-stat-card">
-                      <div className="zap-stat-label">Active sensor nodes</div>
+                      <div className="zap-stat-label">Flow hardware</div>
                       <div className="zap-stat-value-row">
-                        <span className="zap-stat-value">1,248</span>
-                        <span className="zap-delta-pos">+6.4%</span>
+                        <span className="zap-stat-value">FS-S401</span>
+                        <span className="zap-delta-pos">GPIO34</span>
                       </div>
                     </div>
                   </div>

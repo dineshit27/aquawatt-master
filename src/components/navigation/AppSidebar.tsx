@@ -11,12 +11,16 @@ import {
   Wifi,
   Database,
   Home,
+  TrendingUp,
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { useTheme } from '../../context/ThemeContext';
 
 export const AppSidebar: React.FC = () => {
   const location = useLocation();
   const { isSimulatingLive, telemetrySourceMode, activeUnreadAlertsCount } = useApp();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const navItems = [
     {
@@ -26,6 +30,7 @@ export const AppSidebar: React.FC = () => {
       badge: activeUnreadAlertsCount > 0 ? activeUnreadAlertsCount : undefined,
     },
     { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+    { to: '/business-analytics', label: 'Business Analytics', icon: TrendingUp },
     { to: '/community', label: 'Community', icon: Users2 },
     { to: '/subscription', label: 'Plans', icon: CreditCard },
     { to: '/contact', label: 'Support', icon: Headphones },
@@ -34,7 +39,7 @@ export const AppSidebar: React.FC = () => {
   return (
     <aside
       aria-label="Application sidebar"
-      className="hidden md:flex flex-col items-center justify-between w-[72px] shrink-0 bg-white dark:bg-[#0D1524] border-r border-slate-200/90 dark:border-slate-800/90 py-5 px-2 z-30 transition-colors h-full"
+      className="hidden md:flex flex-col items-center justify-between w-[72px] shrink-0 bg-[var(--aw-surface)] dark:bg-[#0D1524] border-r border-[var(--aw-surface-border)] dark:border-slate-800/90 py-5 px-2 z-30 transition-colors h-full"
     >
       {/* Top Brand Mark + Navigation Icons */}
       <div className="flex flex-col items-center gap-6 w-full">
@@ -43,7 +48,10 @@ export const AppSidebar: React.FC = () => {
           title="AquaWatt — Return to Homepage"
           className="group relative flex items-center justify-center p-1 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition-all"
         >
-          <div className="relative w-9 h-9 rounded-xl bg-[#174A8B] dark:bg-sky-600 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform ring-1 ring-sky-300/40 shrink-0">
+          <div
+            className="relative w-9 h-9 rounded-xl dark:bg-sky-600 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform ring-1 ring-sky-300/40 shrink-0"
+            style={isDark ? undefined : { backgroundColor: 'var(--aw-accent)' }}
+          >
             <Droplet className="w-4 h-4 fill-white/90" />
             <Zap className="w-2.5 h-2.5 absolute top-1 right-1 text-emerald-300 fill-emerald-300" />
           </div>
@@ -61,9 +69,18 @@ export const AppSidebar: React.FC = () => {
                 title={item.label}
                 aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
+                style={
+                  isActive && !isDark
+                    ? {
+                        backgroundColor: 'var(--aw-accent-soft)',
+                        color: 'var(--aw-accent)',
+                        boxShadow: '0 0 0 1px var(--aw-accent-ring)',
+                      }
+                    : undefined
+                }
                 className={`group relative w-11 h-11 rounded-xl flex flex-col items-center justify-center transition-all ${
                   isActive
-                    ? 'bg-[#174A8B]/10 dark:bg-sky-500/15 text-[#174A8B] dark:text-sky-400 shadow-xs ring-1 ring-[#174A8B]/20 dark:ring-sky-400/25'
+                    ? 'dark:bg-sky-500/15 dark:text-sky-400 shadow-xs dark:ring-1 dark:ring-sky-400/25'
                     : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                 }`}
               >

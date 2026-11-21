@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { MarketingNavbar } from '../components/navigation/MarketingNavbar';
 import { Footer } from '../components/navigation/Footer';
@@ -13,26 +13,14 @@ import {
   Droplet,
   Zap,
   ArrowRight,
-  ArrowUpRight,
-  AlertTriangle,
   Activity,
-  ShieldCheck,
   Cpu,
-  Sparkles,
-  Gauge,
   Wifi,
   Database,
   Server,
   Shield,
   Trophy,
-  Sliders,
   Radio,
-  Power,
-  RotateCcw,
-  Check,
-  ChevronRight,
-  Flame,
-  Layers,
   Thermometer,
   Monitor,
 } from 'lucide-react';
@@ -57,9 +45,9 @@ export const Home: React.FC = () => {
   const [pilotIndex, setPilotIndex] = useState(0);
 
   const pilotHighlights = [
-    'took less than an hour',
-    'immediate insights into standby power',
-    'no proprietary lock-in',
+    'FS-S401 turbine pulses accurately',
+    'without distorting demo baselines',
+    'Supabase PostgreSQL RLS tables',
   ];
 
   const fieldTestimonials: Testimonial[] = TESTIMONIALS.map((item, idx) => ({
@@ -67,7 +55,6 @@ export const Home: React.FC = () => {
     highlight: pilotHighlights[idx] ?? '',
     author: item.author,
     role: `${item.role} · ${item.organization}`,
-    avatar: item.avatar,
   }));
 
   const handleTripValve = () => {
@@ -122,7 +109,7 @@ export const Home: React.FC = () => {
         { text: 'Unlimited nodes & submeters' },
         { text: 'Carbon emissions avoidance ledger' },
         { text: 'REST & MQTT webhook bridges' },
-        { text: 'Dedicated telemetry support SLA' },
+        { text: 'Repository issue & architecture docs' },
       ],
       buttonText: billingCycle === 'yearly' ? '₹1,199' : '₹1,499',
       isPopular: false,
@@ -319,8 +306,8 @@ export const Home: React.FC = () => {
                 Precision Pulse & Inline Flow Monitoring
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed max-w-lg">
-                Connects to standard Hall-effect pulse flow meters (such as YF-S201) and digital transducers.
-                An ESP32 GPIO hardware interrupt captures rotational pulse frequencies, calculating flow rate and total consumed volume in real time.
+                Connects to standard Hall-effect pulse flow meters (verified with FS-S401 on GPIO34).
+                An ESP32 GPIO hardware interrupt captures rotational pulse frequencies, calculating flow rate and total consumed volume locally.
               </p>
 
               {/* Sensor Studio Photo */}
@@ -429,27 +416,27 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          {/* Bento Card 4: Multi-Phase Harmonic FFT (4 Cols) */}
+          {/* Bento Card 4: INA219 DC Power Integration (4 Cols) */}
           <div className="md:col-span-4 rounded-2xl bg-white dark:bg-[#0E1626] border border-slate-200/90 dark:border-slate-800/90 shadow-xs p-6 flex flex-col justify-between hover:border-sky-400/50 transition-all">
             <div>
               <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
-                <span className="text-[#174A8B] dark:text-sky-400 font-bold uppercase">Diagnostics 04</span>
-                <span>16-bit FFT</span>
+                <span className="text-[#174A8B] dark:text-sky-400 font-bold uppercase">Power Module 04</span>
+                <span>INA219 I2C (Pending)</span>
               </div>
               <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white">
-                Compressor Harmonic Signature
+                INA219 DC Bus Integration
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
-                Decomposes current waveforms to identify heat pump motor coil degradation before mechanical failure occurs.
+                High-side I2C DC voltage and current sensing stage in testbench development; calibration pending before live physical metrics populate.
               </p>
               <div className="mt-4 flex items-end gap-1.5 h-10 px-2 py-1 bg-slate-50 dark:bg-slate-900 rounded border border-slate-200/60 dark:border-slate-800">
                 {[20, 35, 60, 45, 90, 30, 25, 40, 55, 30].map((h, i) => (
-                  <div key={i} className="flex-1 bg-[#174A8B] dark:bg-sky-400 rounded-t-xs" style={{ height: `${h}%` }} />
+                  <div key={i} className="flex-1 bg-[#174A8B]/40 dark:bg-sky-400/40 rounded-t-xs" style={{ height: `${h}%` }} />
                 ))}
               </div>
             </div>
             <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-mono text-slate-400">
-              Total Harmonic Distortion: 1.4% (Optimal)
+              INA219 Calibration Pending · Nullable DB Columns
             </div>
           </div>
 
@@ -605,7 +592,7 @@ export const Home: React.FC = () => {
                       The 40-Gallon Daily Baseline Drop
                     </h3>
                     <p className="text-[11px] text-slate-500 font-mono mt-0.5">
-                      1,420 participants · 6 days remaining
+                      Demo Challenge · 6 days remaining
                     </p>
                   </div>
                 </div>
@@ -624,10 +611,10 @@ export const Home: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-xs font-bold text-slate-900 dark:text-white">
-                      Phantom & Vampire Power Exterminator
+                      Phantom &amp; Vampire Power Exterminator
                     </h3>
                     <p className="text-[11px] text-slate-500 font-mono mt-0.5">
-                      980 participants · 3 days remaining
+                      Demo Challenge · 3 days remaining
                     </p>
                   </div>
                 </div>
@@ -645,13 +632,13 @@ export const Home: React.FC = () => {
                 to="/community"
                 className="text-xs text-[#174A8B] dark:text-sky-400 font-semibold hover:underline flex items-center gap-1.5"
               >
-                <span>Explore Full Leaderboard & Badges</span>
+                <span>Explore Full Leaderboard &amp; Badges</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
 
-          {/* Right 6 Cols: Attributable Field Testimonials */}
+          {/* Right 6 Cols: Engineering Validation Notes */}
           <div className="lg:col-span-6 space-y-5">
             <div>
               <LandingLeadingPill
@@ -659,10 +646,10 @@ export const Home: React.FC = () => {
                 textVariant="emerald"
                 className="mb-2"
               >
-                Field Evidence
+                Architecture Notes
               </LandingLeadingPill>
               <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
-                Field Evidence from Testbench Pilots
+                Testbench Engineering Notes
               </h2>
             </div>
 
@@ -671,13 +658,13 @@ export const Home: React.FC = () => {
               index={pilotIndex}
               onIndexChange={setPilotIndex}
               interval={4500}
-              eyebrow="Pilot observation"
+              eyebrow="Testbench note"
             />
 
             {TESTIMONIALS[pilotIndex]?.metrics && (
               <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] font-mono">
                 <span className="text-slate-500 dark:text-slate-400">
-                  Pilot benchmark ({pilotIndex + 1}/{TESTIMONIALS.length})
+                  Validation note ({pilotIndex + 1}/{TESTIMONIALS.length})
                 </span>
                 <span className="font-semibold text-[#237A57] dark:text-emerald-400">
                   {TESTIMONIALS[pilotIndex].metrics}

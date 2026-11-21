@@ -27,18 +27,32 @@ import {
   Database,
   Sparkles,
   Award,
+  TrendingUp,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { DashboardAssistantDrawer } from '../dashboard/DashboardAssistantDrawer';
+import { WorkspaceControlsDrawer } from '../common/WorkspaceControlsDrawer';
+import { PALETTE_OPTIONS } from '../../utils/workspaceTheme';
+import type { FolioPaletteId } from '../../types/businessAnalytics';
+
+const PALETTE_DOT_COLOR: Record<FolioPaletteId, string> = PALETTE_OPTIONS.reduce(
+  (acc, item) => {
+    acc[item.id] = item.dotColor;
+    return acc;
+  },
+  {} as Record<FolioPaletteId, string>
+);
 
 interface AppHeaderProps {
   title?: string;
   subtitle?: string;
 }
 
-export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
-  const { theme, setTheme } = useTheme();
+export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
+  const { theme, setTheme, palette, toggleGridOverlay } = useTheme();
   const {
     user,
+    signOut,
     isSimulatingLive,
     toggleLiveSimulation,
     alerts,
@@ -47,7 +61,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
     currentPlanId,
     telemetrySourceMode,
     refreshPhysicalTelemetry,
-    showToast,
   } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,12 +70,14 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
   const [stackVersion, setStackVersion] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [controlsOpen, setControlsOpen] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMobileMenuOpen(false);
     setNotificationsOpen(false);
+    setControlsOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -70,10 +85,22 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
         e.preventDefault();
         setAssistantOpen(prev => !prev);
+        return;
       }
       if (e.key === 'Escape') {
         setNotificationsOpen(false);
         setMobileMenuOpen(false);
+        setControlsOpen(false);
+        return;
+      }
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target?.isContentEditable) {
+        return;
+      }
+      if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        toggleGridOverlay();
       }
     };
     const handleOpenAssistant = () => setAssistantOpen(true);
@@ -84,7 +111,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('aquawatt:open-assistant', handleOpenAssistant);
     };
-  }, []);
+  }, [toggleGridOverlay]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -151,28 +178,26 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
   };
 
   const profileAccounts: Account[] = useMemo(
-    () => [
-      {
-        id: 'usr_8492',
-        name: user.fullName,
-        email: user.email,
-        plan: user.tier,
-        avatarUrl: user.avatarUrl,
-      },
-      {
-        id: 'facility_ops',
-        name: user.facilityName,
-        email: 'ops@aquawatt.io',
-        plan: currentPlanId.toUpperCase(),
-      },
-      {
-        id: 'esp32_bench',
-        name: 'ESP32 Lab Node',
-        email: 'node01@aquawatt.io',
-        plan: 'Gateway',
-      },
-    ],
-    [user.fullName, user.email, user.tier, user.avatarUrl, user.facilityName, currentPlanId]
+    () =>
+      user
+        ? [
+            {
+              id: user.id,
+              name: user.fullName,
+              email: user.email,
+              plan: user.tier,
+              avatarUrl: user.avatarUrl || undefined,
+            },
+          ]
+        : [
+            {
+              id: 'guest',
+              name: 'Guest Visitor',
+              email: 'Sign in for console access',
+              plan: 'Public',
+            },
+          ],
+    [user]
   );
 
   const profileItems: ProfileMenuItem[] = useMemo(
@@ -180,13 +205,13 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
       {
         label: `Subscription (${currentPlanId})`,
         icon: <CreditCard className="size-4" />,
-        value: user.tier,
+        value: user?.tier ?? 'Standard Pro',
         onSelect: () => navigate('/subscription'),
       },
       {
         label: 'Eco Rank & Milestones',
         icon: <Award className="size-4" />,
-        value: `${user.sustainabilityScore}/100`,
+        value: `${user?.sustainabilityScore ?? 0}/100`,
         onSelect: () => navigate('/community'),
       },
       {
@@ -201,7 +226,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
         onSelect: () => setAssistantOpen(true),
       },
     ],
-    [currentPlanId, user.tier, user.sustainabilityScore, navigate]
+    [currentPlanId, user?.tier, user?.sustainabilityScore, navigate]
   );
 
   const handleProfileThemeChange = (nextTheme: AccountTheme) => {
@@ -220,6 +245,8 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
         return 'Facility Control Console';
       case '/analytics':
         return 'Consumption & Cost Analytics';
+      case '/business-analytics':
+        return 'Executive Business Analytics';
       case '/community':
         return 'Conservation Community & Challenges';
       case '/subscription':
@@ -234,6 +261,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+    { to: '/business-analytics', label: 'Business Analytics', icon: TrendingUp },
     { to: '/community', label: 'Community', icon: Users2 },
     { to: '/subscription', label: 'Subscription', icon: CreditCard },
     { to: '/contact', label: 'Contact & Support', icon: Headphones },
@@ -242,8 +270,15 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
   return (
     <header
       ref={headerRef}
-      className="h-16 bg-white dark:bg-[#0D1524] border-b border-slate-200/80 dark:border-slate-800/80 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2 shrink-0 z-20"
+      className="relative h-16 bg-[var(--aw-surface)] dark:bg-[#0D1524] border-b border-[var(--aw-surface-border)] dark:border-slate-800/80 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-2 shrink-0 z-20 transition-colors"
     >
+      {/* Top 2px Editorial Palette Accent Rule */}
+      <span
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-[2px] transition-colors"
+        style={{ backgroundColor: PALETTE_DOT_COLOR[palette] }}
+      />
+
       {/* Left: Mobile menu button + Title & facility metadata */}
       <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
         <button
@@ -259,7 +294,10 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
 
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
           <Link to="/" aria-label="AquaWatt Home" className="md:hidden flex items-center gap-1.5 shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-[#174A8B] flex items-center justify-center text-white">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white transition-colors"
+              style={{ backgroundColor: theme === 'dark' ? '#0284C7' : 'var(--aw-accent)' }}
+            >
               <Droplet className="w-3.5 h-3.5 fill-white" />
             </div>
           </Link>
@@ -271,7 +309,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-300 truncate">
                 <Building2 className="w-3 h-3 text-[#174A8B] dark:text-sky-400 shrink-0" />
-                {user.facilityName}
+                {user?.facilityName || 'AquaWatt Facility Console'}
               </span>
               <span>•</span>
               <span className="font-mono text-[11px] text-slate-400 dark:text-slate-500 shrink-0">
@@ -341,6 +379,24 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
           </kbd>
         </button>
 
+        {/* Workspace Controls Drawer Trigger */}
+        <button
+          type="button"
+          onClick={() => setControlsOpen(true)}
+          aria-label="Open workspace controls"
+          aria-expanded={controlsOpen}
+          title="Workspace Controls · Telemetry source, reporting period, palette & grid (G)"
+          className="min-w-9 min-h-9 sm:min-w-0 flex items-center justify-center gap-1.5 px-2 py-1.5 sm:px-2.5 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800/70 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/90 dark:border-slate-700/90 transition-colors cursor-pointer"
+        >
+          <span
+            aria-hidden="true"
+            className="w-2 h-2 rounded-full border border-slate-400/40 shrink-0"
+            style={{ backgroundColor: PALETTE_DOT_COLOR[palette] }}
+          />
+          <SlidersHorizontal className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
+          <span className="hidden lg:inline font-sans font-semibold">Controls</span>
+        </button>
+
         {/* Notifications Popover Trigger */}
         <div className="relative" ref={notificationsRef}>
           <button
@@ -404,17 +460,16 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
 
         {/* User Profile dropdown */}
         <ProfileDropdown
+          key={user?.id || 'guest'}
           accounts={profileAccounts}
           compactTriggerOnMobile
-          defaultAccountId="usr_8492"
+          defaultAccountId={user?.id || 'guest'}
           items={profileItems}
-          onAccountChange={account =>
-            showToast(`Switched active context to ${account.name}`, 'info')
-          }
-          onAddAccount={() => navigate('/contact')}
-          onSignOut={() => {
-            showToast('Signed out of Facility Console', 'info');
-            navigate('/');
+          onSignOut={async () => {
+            if (user) {
+              await signOut();
+            }
+            navigate('/login');
           }}
           onThemeChange={handleProfileThemeChange}
           theme={theme}
@@ -455,6 +510,12 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title, subtitle }) => {
       <DashboardAssistantDrawer
         isOpen={assistantOpen}
         onClose={() => setAssistantOpen(false)}
+      />
+
+      {/* Slide-over Workspace Controls Drawer */}
+      <WorkspaceControlsDrawer
+        isOpen={controlsOpen}
+        onClose={() => setControlsOpen(false)}
       />
     </header>
   );

@@ -154,7 +154,7 @@ export default function Footer22({
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}
-      className="w-full bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-100 font-sans transition-colors duration-300"
+      className="w-full bg-[var(--aw-surface)] dark:bg-[#0a0a0a] border-t border-[var(--aw-surface-border)] dark:border-slate-800/70 text-neutral-900 dark:text-neutral-100 font-sans transition-colors duration-300"
     >
       {/* Top Section */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-20 pb-16">

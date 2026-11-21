@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
 import { KpiCard } from '../components/cards/KpiCard';
 import { ResourceMetricCard } from '../components/cards/ResourceMetricCard';
@@ -8,6 +8,7 @@ import { AlertsPanel } from '../components/dashboard/AlertsPanel';
 import { AIRecommendationsPanel } from '../components/dashboard/AIRecommendationsPanel';
 import { RecentActivityPanel } from '../components/dashboard/RecentActivityPanel';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   Droplet,
   Zap,
@@ -41,8 +42,19 @@ export const Dashboard: React.FC = () => {
     hasPhysicalData,
     refreshPhysicalTelemetry,
   } = useApp();
+  const { reportingPeriod } = useTheme();
 
-  const [timeRange, setTimeRange] = useState<'8h' | '24h' | '30d'>('24h');
+  const [timeRange, setTimeRange] = useState<'8h' | '24h' | '30d'>(() =>
+    reportingPeriod === '30d' || reportingPeriod === '90d' ? '30d' : '24h'
+  );
+  const prevReportingPeriodRef = useRef(reportingPeriod);
+
+  useEffect(() => {
+    if (prevReportingPeriodRef.current === reportingPeriod) return;
+    prevReportingPeriodRef.current = reportingPeriod;
+    setTimeRange(reportingPeriod === '30d' || reportingPeriod === '90d' ? '30d' : '24h');
+  }, [reportingPeriod]);
+
   const [isEmergencyValveTripped, setIsEmergencyValveTripped] = useState<boolean>(false);
 
   const isPhysical = telemetrySourceMode === 'physical';
@@ -117,7 +129,7 @@ export const Dashboard: React.FC = () => {
             </div>
 
             <h2 className="text-xl sm:text-2xl font-bold font-heading text-slate-900 dark:text-white tracking-tight mt-1 truncate">
-              {user.facilityName}
+              {user?.facilityName || 'AquaWatt Facility Console'}
             </h2>
           </div>
 
@@ -359,7 +371,7 @@ export const Dashboard: React.FC = () => {
             accentVariant="amber"
             value={metrics.totalPower != null ? metrics.totalPower.toFixed(1) : '—'}
             unit="kWh"
-            comparisonText={isPhysical && metrics.totalPower == null ? 'INA219 untested' : 'vs baseline'}
+            comparisonText={isPhysical && metrics.totalPower == null ? 'INA219 pending' : 'vs baseline'}
             percentChange={isPhysical && metrics.totalPower == null ? null : 8.6}
             isIncrease={false}
             isPositiveOutcome={true}
@@ -367,7 +379,7 @@ export const Dashboard: React.FC = () => {
             hideSparkline={isPhysical && metrics.totalPower == null}
             infoTooltip={
               isPhysical
-                ? 'Electrical draw from INA219 DC monitor (null until physical bench test passes)'
+                ? 'Electrical draw from INA219 DC monitor (null until physical calibration completes)'
                 : 'Total electrical consumption in selected window vs historical facility baseline'
             }
             sparklineData={timeRange === '8h' ? [19, 18, 19, 17] : [22, 20, 21, 19, 18, 19, 17]}
@@ -381,7 +393,7 @@ export const Dashboard: React.FC = () => {
             secondaryMetric={{
               label: isPhysical ? 'INA219' : 'Power factor',
               value: isPhysical
-                ? 'Pending test'
+                ? 'Calibration pending'
                 : electricityReading.powerFactor != null
                   ? `${electricityReading.powerFactor}`
                   : '—',

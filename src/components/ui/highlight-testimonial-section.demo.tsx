@@ -17,30 +17,24 @@ type DemoProps = {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "Integrating our ESP32 testbench with AquaWatt's telemetry dashboard took less than an hour. The pulse counting interrupt routine feeds right into the MQTT stream for real-time visualization.",
-    highlight: "took less than an hour",
-    author: "R. Sharma",
-    role: "Embedded Systems Developer · IoT Maker Lab",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "Hardware interrupt routines on GPIO34 capture FS-S401 turbine pulses accurately while driving the local 16x2 character LCD display on the ESP32 testbench.",
+    highlight: "FS-S401 turbine pulses accurately",
+    author: "Testbench Flow Module",
+    role: "Verified Edge Instrumentation · ESP32 + 16x2 LCD",
   },
   {
     quote:
-      "The clean Swiss minimalist UI makes analyzing sensor data effortless. Testing anomaly detection thresholds on domestic washer and refrigerator loads gave us immediate insights into standby power.",
-    highlight: "immediate insights into standby power",
-    author: "P. Mehta & Team",
-    role: "Energy Auditor & Maker · Smart Living Prototype Group",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "Reconciled INR tariff calculations and time-of-use schedule modeling evaluate daily water and energy budgets transparently without distorting demo baselines.",
+    highlight: "without distorting demo baselines",
+    author: "Tariff & Anomaly Engine",
+    role: "Software Analytical Model · INR ₹ Calculation Suite",
   },
   {
     quote:
-      "Standardizing on ESP32 + MQTT means no proprietary lock-in. We can view live readings in the terminal over Serial at 115200 baud and simultaneously verify trends in the AquaWatt web console.",
-    highlight: "no proprietary lock-in",
-    author: "A. Patel",
-    role: "Sustainability Researcher · Urban Resource Collective",
-    avatar:
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "ESP32 firmware outputs diagnostics at 115200 baud alongside an open MQTT payload schema designed to sync cleanly with Supabase PostgreSQL RLS tables.",
+    highlight: "Supabase PostgreSQL RLS tables",
+    author: "MQTT & Supabase Schema",
+    role: "Cloud Telemetry Architecture · Wi-Fi + RLS Postgres",
   },
 ];
 

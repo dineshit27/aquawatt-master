@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
 import {
   ResponsiveContainer,
@@ -37,6 +37,7 @@ import {
 import { PieChart } from '../components/ui/pie-chart';
 import { RadarChart } from '../components/ui/radar-chart';
 import { useApp } from '../context/AppContext';
+import { useTheme } from '../context/ThemeContext';
 import { downloadCsv, downloadJson } from '../utils/exportUtils';
 import { DEFAULT_INR_WATER_RATE, DEFAULT_INR_ELECTRICITY_RATE } from '../utils/calculations';
 import {
@@ -51,8 +52,23 @@ import { DailySpanDumbbellCard } from '../components/analytics/DailySpanDumbbell
 
 export const Analytics: React.FC = () => {
   const { user, showToast, telemetrySourceMode, setTelemetrySourceMode, isSupabaseReady, hasPhysicalData } = useApp();
+  const { reportingPeriod } = useTheme();
   const isPhysical = telemetrySourceMode === 'physical';
-  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d' | '12m' | 'custom'>('7d');
+  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d' | '12m' | 'custom'>(() =>
+    reportingPeriod === '7d' ? '7d' : '12m'
+  );
+  const prevReportingPeriodRef = useRef(reportingPeriod);
+
+  useEffect(() => {
+    if (prevReportingPeriodRef.current === reportingPeriod) return;
+    prevReportingPeriodRef.current = reportingPeriod;
+    if (reportingPeriod === '7d') {
+      setTimeRange('7d');
+    } else {
+      setTimeRange('12m');
+    }
+  }, [reportingPeriod]);
+
   const [zoneMetric, setZoneMetric] = useState<'both' | 'water' | 'electricity'>('both');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isCustomDateModalOpen, setIsCustomDateModalOpen] = useState(false);
@@ -155,7 +171,7 @@ export const Analytics: React.FC = () => {
     { metric: 'Peak Load Shift', current: 76, target: 85 },
     { metric: 'Leak Resilience', current: 91, target: 95 },
     { metric: 'Standby Cut', current: 78, target: 82 },
-    { metric: 'Eco Score', current: user.sustainabilityScore, target: 92 },
+    { metric: 'Eco Score', current: user?.sustainabilityScore ?? 85, target: 92 },
   ];
 
   const zoneRadarData = ZONE_DISTRIBUTIONS.map(zone => ({
@@ -212,7 +228,7 @@ export const Analytics: React.FC = () => {
         downloadCsv(`${filename}.csv`, headers, rows);
       } else {
         downloadJson(`${filename}.json`, {
-          facility: user.facilityName,
+          facility: user?.facilityName || 'AquaWatt Facility Console',
           telemetryWindow: timeRange,
           customDateRange: activeDateRange,
           currency: 'INR',
@@ -316,7 +332,7 @@ export const Analytics: React.FC = () => {
             <div className="text-amber-900 dark:text-amber-200 leading-relaxed">
               <strong className="font-semibold">Physical Hardware Boundary Notice:</strong>{' '}
               Multi-circuit energy Analytics below are modeled from calibrated Demo testbench baselines because physical{' '}
-              <span className="font-mono">INA219</span> power monitoring is currently untested (
+              <span className="font-mono">INA219</span> power calibration is currently pending (
               {isSupabaseReady && hasPhysicalData ? 'FS-S401 water flow synced on Dashboard' : 'awaiting Supabase ingestion'}).
             </div>
             <button
@@ -1066,7 +1082,7 @@ export const Analytics: React.FC = () => {
             </div>
 
             <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 font-mono text-[11px] space-y-1">
-              <p>Facility: {user.facilityName}</p>
+              <p>Facility: {user?.facilityName || 'AquaWatt Facility Console'}</p>
               <p>Selected Window: {timeRange.toUpperCase()}</p>
               <p>Transport: ESP32 Wi-Fi &amp; MQTT Telemetry Feeds</p>
               <p>

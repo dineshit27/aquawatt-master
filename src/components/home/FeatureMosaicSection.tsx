@@ -23,13 +23,13 @@ const INSIGHT_DAYS: InsightDay[] = [
 
 const TELEMETRY_ALERTS = [
   {
-    title: 'Shutoff triggered!',
-    sub: 'Kitchen Main valve closed · 0.0 L/min',
+    title: 'Shutoff preview!',
+    sub: 'Simulated valve trip · 0.0 L/min (Demo)',
     time: 'Just now',
   },
   {
     title: 'Peak load shifted',
-    sub: 'Pump deferred off-peak · 1.8 kWh saved',
+    sub: 'Simulated off-peak schedule · 1.8 kWh saved',
     time: '2m ago',
   },
   {
@@ -40,10 +40,10 @@ const TELEMETRY_ALERTS = [
 ];
 
 const SEARCH_PROMPTS = [
-  'Search flow sensors, valve logs, kWh spikes...',
-  'Kitchen Main · leak threshold 4.2 L/min',
-  'ESP32-04 · battery 98% · RSSI -54 dBm',
-  'Tariff window · off-peak pump schedule',
+  'Search FS-S401 sensors, demo logs, kWh models...',
+  'Testbench Main · flow alert threshold 4.2 L/min',
+  'ESP32-NODE-01 · RSSI -62 dBm · Serial 115200',
+  'Tariff window · off-peak pump simulation',
 ];
 
 export const FeatureMosaicSection: React.FC = () => {
@@ -247,10 +247,10 @@ export const FeatureMosaicSection: React.FC = () => {
           id="feature-mosaic-heading"
           className="text-2xl sm:text-4xl lg:text-[2.7rem] font-extrabold font-heading text-slate-900 dark:text-white tracking-tight text-balance leading-tight"
         >
-          Autonomous Edge Control &amp; Telemetry
+          Autonomous Edge Control &amp; Telemetry Preview
         </h2>
         <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Instant shutoff alerts, multi-protocol hardware bridges, weekly conservation metrics, and node search unified in one workspace.
+          Simulated shutoff previews, multi-protocol hardware blueprints, weekly conservation metrics, and node search unified in one workspace.
         </p>
       </div>
       <div
@@ -464,17 +464,17 @@ export const FeatureMosaicSection: React.FC = () => {
           onMouseLeave={handleAutomateMouseLeave}
           onClick={() => setValveArmed((prev) => !prev)}
           className="mosaic-card mosaic-automate cursor-pointer"
-          aria-label="Autonomous valve and power automation"
-          title="Click to toggle valve arming preview"
+          aria-label="Simulated valve and power automation preview"
+          title="Click to toggle simulated valve arming preview"
         >
           <div className="mosaic-automate-copy">
             <h2>
-              <span className="g">Automate</span> your grid.
+              <span className="g">Simulate</span> your rules.
               <br />
-              Protect every drop.
+              Preview shutoff safety.
             </h2>
             <p className="mosaic-sub">
-              Autonomous ESP32 valve &amp; load workflows that cut waste 24/7.
+              Software-simulated valve &amp; load workflows (physical relay is planned hardware).
             </p>
           </div>
 
@@ -531,7 +531,7 @@ export const FeatureMosaicSection: React.FC = () => {
                   />
                 </svg>
               </span>
-              <span>{valveArmed ? 'Valve Shutoff Armed' : 'Leak Tripped · 0.0 L/min'}</span>
+              <span>{valveArmed ? 'Valve Sim Armed' : 'Sim Tripped · 0.0 L/min'}</span>
             </div>
 
             <div className="mosaic-pill-ai">

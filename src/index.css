@@ -53,9 +53,74 @@
   --chart-4: #f59e0b;
   --chart-5: #6366f1;
   --chart-6: #64748b;
+
+  /* Global Surface Palette Tokens (AquaWatt Swiss default) */
+  --aw-canvas: #F7F9FB;
+  --aw-surface: #FFFFFF;
+  --aw-surface-border: #E2E8F0;
+  --aw-accent: #174A8B;
+  --aw-accent-soft: rgba(23, 74, 139, 0.09);
+  --aw-accent-ring: rgba(23, 74, 139, 0.24);
 }
 
-html.dark {
+html[data-aw-palette="swiss"] {
+  --background: #FDFBF7;
+  --card: #FDFBF7;
+  --border: #D8D1C7;
+  --ring: #1E1C1A;
+  --primary: #1E1C1A;
+  --aw-canvas: #F4F1EC;
+  --aw-surface: #FDFBF7;
+  --aw-surface-border: #D8D1C7;
+  --aw-accent: #1E1C1A;
+  --aw-accent-soft: rgba(30, 28, 26, 0.08);
+  --aw-accent-ring: rgba(30, 28, 26, 0.24);
+}
+
+html[data-aw-palette="ivory"] {
+  --background: #FFFDF8;
+  --card: #FFFDF8;
+  --border: #E6DFCC;
+  --ring: #5B4636;
+  --primary: #5B4636;
+  --aw-canvas: #FAF8F3;
+  --aw-surface: #FFFDF8;
+  --aw-surface-border: #E6DFCC;
+  --aw-accent: #5B4636;
+  --aw-accent-soft: rgba(91, 70, 54, 0.09);
+  --aw-accent-ring: rgba(91, 70, 54, 0.25);
+}
+
+html[data-aw-palette="forest"] {
+  --background: #F8FCFA;
+  --card: #F8FCFA;
+  --border: #C6D8CE;
+  --ring: #1A3A2E;
+  --primary: #1A3A2E;
+  --aw-canvas: #EEF5F1;
+  --aw-surface: #F8FCFA;
+  --aw-surface-border: #C6D8CE;
+  --aw-accent: #1A3A2E;
+  --aw-accent-soft: rgba(26, 58, 46, 0.10);
+  --aw-accent-ring: rgba(26, 58, 46, 0.26);
+}
+
+html[data-aw-palette="terracotta"] {
+  --background: #FFF9F6;
+  --card: #FFF9F6;
+  --border: #E5CFC6;
+  --ring: #8C3B26;
+  --primary: #8C3B26;
+  --aw-canvas: #F9F2ED;
+  --aw-surface: #FFF9F6;
+  --aw-surface-border: #E5CFC6;
+  --aw-accent: #8C3B26;
+  --aw-accent-soft: rgba(140, 59, 38, 0.10);
+  --aw-accent-ring: rgba(140, 59, 38, 0.26);
+}
+
+html.dark,
+html[data-aw-palette="dark"] {
   color-scheme: dark;
   --background: #0b111d;
   --foreground: #f8fafc;
@@ -73,11 +138,18 @@ html.dark {
   --chart-4: #fbbf24;
   --chart-5: #818cf8;
   --chart-6: #94a3b8;
+
+  --aw-canvas: #070B13;
+  --aw-surface: #0D1524;
+  --aw-surface-border: #1E293B;
+  --aw-accent: #38BDF8;
+  --aw-accent-soft: rgba(56, 189, 248, 0.14);
+  --aw-accent-ring: rgba(56, 189, 248, 0.30);
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #F7F9FB;
+  background-color: var(--aw-canvas);
   color: #17263F;
   transition: background-color 0.25s ease, color 0.25s ease;
 }

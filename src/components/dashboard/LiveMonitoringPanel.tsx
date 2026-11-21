@@ -58,13 +58,13 @@ export const LiveMonitoringPanel: React.FC = () => {
     }
     switch (device.type) {
       case 'water_meter':
-        return 'YF-S201 · GPIO Pulse';
+        return 'FS-S401 · GPIO34 Pulse (Demo)';
       case 'smart_valve':
         return 'Relay Actuator · Simulated';
       case 'power_monitor':
-        return 'SCT-013 · CT Clamp';
+        return 'INA219 · DC Monitor (Demo)';
       case 'submeter_panel':
-        return 'CT Submeter · Channel B';
+        return 'Simulated Submeter · Channel B';
       default:
         return 'ESP32 Sensor Node';
     }

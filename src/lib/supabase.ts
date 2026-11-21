@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-export interface ProfileRow {
+export type ProfileRow = {
   id: string;
   full_name: string | null;
   email: string | null;
@@ -14,9 +14,9 @@ export interface ProfileRow {
   sustainability_score: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface DeviceRow {
+export type DeviceRow = {
   id: string;
   user_id: string;
   device_eui: string;
@@ -33,9 +33,9 @@ export interface DeviceRow {
   last_sync: string | null;
   created_at: string;
   updated_at: string;
-}
+};
 
-export interface SensorReadingRow {
+export type SensorReadingRow = {
   id: string;
   device_id: string;
   recorded_at: string;
@@ -57,9 +57,9 @@ export interface SensorReadingRow {
   power_factor: number | null;
   sensor_notes: string | null;
   created_at: string;
-}
+};
 
-export interface AlertRow {
+export type AlertRow = {
   id: string;
   device_id: string;
   title: string;
@@ -75,34 +75,40 @@ export interface AlertRow {
   triggered_at: string;
   resolved_at: string | null;
   created_at: string;
-}
+};
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       profiles: {
         Row: ProfileRow;
         Insert: Partial<ProfileRow> & { id: string };
         Update: Partial<ProfileRow>;
+        Relationships: [];
       };
       devices: {
         Row: DeviceRow;
         Insert: Partial<DeviceRow> & { user_id: string; device_eui: string; name: string };
         Update: Partial<DeviceRow>;
+        Relationships: [];
       };
       sensor_readings: {
         Row: SensorReadingRow;
         Insert: Partial<SensorReadingRow> & { device_id: string };
         Update: Partial<SensorReadingRow>;
+        Relationships: [];
       };
       alerts: {
         Row: AlertRow;
         Insert: Partial<AlertRow> & { device_id: string; title: string; description: string };
         Update: Partial<AlertRow>;
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
   };
-}
+};
 
 export const getEnvVar = (key: string): string | undefined => {
   if (typeof import.meta !== 'undefined' && (import.meta as any).env && (import.meta as any).env[key] !== undefined) {
@@ -205,7 +211,7 @@ export const checkSupabaseConnection = async (): Promise<SupabaseConnectionResul
     };
   }
 
-  const client = createSupabaseClient();
+  const client = supabase || createSupabaseClient();
   if (!client) {
     return {
       isConfigured: false,

@@ -3,18 +3,14 @@ import { AppLayout } from '../components/layout/AppLayout';
 import { useApp } from '../context/AppContext';
 import {
   Trophy,
-  Users2,
   Medal,
   Award,
   CheckCircle2,
   Droplet,
   Zap,
   Leaf,
-  Calendar,
   Flame,
-  ArrowRight,
   Sparkles,
-  Check,
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
 import { LEADERBOARD_USERS } from '../data/mockData';
@@ -59,6 +55,15 @@ export const Community: React.FC = () => {
     }
   };
 
+  const earnedBadgesCount = challenges.filter(c => c.status === 'completed').length;
+  const userName = user?.fullName || 'Facility Operator';
+  const userInitials = userName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0]?.toUpperCase() ?? '')
+    .join('') || 'AQ';
+
   return (
     <AppLayout
       title="Conservation Community & Challenges"
@@ -73,14 +78,14 @@ export const Community: React.FC = () => {
               Resource Sustainability Collective
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Collaborative challenges, peer accountability, and verifiable environmental badges
+              Interactive demonstration sprints, habit tracking, and conservation milestone badges
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#237A57] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5">
               <Leaf className="w-3.5 h-3.5" />
-              <span>4,820 Total Members</span>
+              <span>Demo Simulation Cohort</span>
             </span>
           </div>
         </div>
@@ -88,20 +93,29 @@ export const Community: React.FC = () => {
         {/* CURRENT USER STATUS BANNER */}
         <div className="p-5 rounded-xl bg-gradient-to-r from-[#174A8B] to-[#237A57] text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <img
-              src={user.avatarUrl}
-              alt={user.fullName}
-              className="w-12 h-12 rounded-xl object-cover ring-2 ring-white/30"
-            />
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={userName}
+                className="w-12 h-12 rounded-xl object-cover ring-2 ring-white/30"
+              />
+            ) : (
+              <div
+                aria-hidden="true"
+                className="w-12 h-12 rounded-xl bg-white/15 ring-2 ring-white/30 flex items-center justify-center font-mono font-bold text-base text-white shrink-0"
+              >
+                {userInitials}
+              </div>
+            )}
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold font-heading text-white">{user.fullName}</h3>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-base font-bold font-heading text-white">{userName}</h3>
                 <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white/20 text-emerald-100 font-semibold">
-                  Rank #3 Region
+                  Demo Rank #3
                 </span>
               </div>
               <p className="text-xs text-white/80 font-mono mt-0.5">
-                {user.facilityName} • Testbench Lab Pilot
+                {user?.facilityName || 'AquaWatt Facility Console'} • Simulation Preview
               </p>
             </div>
           </div>
@@ -110,13 +124,13 @@ export const Community: React.FC = () => {
             <div>
               <span className="text-[11px] font-mono text-emerald-100 uppercase">Sustainability Score</span>
               <div className="text-2xl font-extrabold font-mono text-white">
-                {user.sustainabilityScore} <span className="text-xs text-emerald-200">/ 100</span>
+                {user?.sustainabilityScore ?? 85} <span className="text-xs text-emerald-200">/ 100</span>
               </div>
             </div>
             <div>
-              <span className="text-[11px] font-mono text-emerald-100 uppercase">Total Avoided CO₂</span>
+              <span className="text-[11px] font-mono text-emerald-100 uppercase">Completed Sprints</span>
               <div className="text-2xl font-extrabold font-mono text-white">
-                224.8 <span className="text-xs text-emerald-200">kg</span>
+                {earnedBadgesCount} <span className="text-xs text-emerald-200">/ {challenges.length}</span>
               </div>
             </div>
           </div>
@@ -277,10 +291,10 @@ export const Community: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-amber-500" />
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-white font-heading">
-                    Regional Eco Leaderboard
+                    Sample Eco Leaderboard
                   </h3>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">Open Pilot Cohort</span>
+                <span className="text-[11px] font-mono text-slate-400">Demo Cohort</span>
               </div>
 
               <div className="divide-y divide-slate-100 dark:divide-slate-800/60 mt-2">
@@ -336,10 +350,10 @@ export const Community: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Medal className="w-4 h-4 text-[#174A8B] dark:text-sky-400" />
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-white font-heading">
-                    Verified Badges
+                    Sprint Badges (Demo)
                   </h3>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">2 / 5 Earned</span>
+                <span className="text-[11px] font-mono text-slate-400">{earnedBadgesCount} / {challenges.length} Earned</span>
               </div>
 
               <div className="grid grid-cols-2 gap-2.5 mt-3 text-xs">

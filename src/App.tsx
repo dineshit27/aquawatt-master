@@ -9,10 +9,16 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
 import { ScrollToTop } from './components/common/ScrollToTop';
 import { SmoothCursor } from './components/ui/smooth-cursor';
+import { ProtectedRoute, PublicOnlyRoute } from './components/auth/RouteGuards';
 
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
+const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login })));
+const Signup = lazy(() => import('./pages/Signup').then(m => ({ default: m.Signup })));
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
+const BusinessAnalytics = lazy(() =>
+  import('./pages/BusinessAnalytics').then(m => ({ default: m.BusinessAnalytics }))
+);
 const Community = lazy(() => import('./pages/Community').then(m => ({ default: m.Community })));
 const Subscription = lazy(() => import('./pages/Subscription').then(m => ({ default: m.Subscription })));
 const Contact = lazy(() => import('./pages/Contact').then(m => ({ default: m.Contact })));
@@ -40,11 +46,21 @@ export default function App() {
           <Suspense fallback={<RouteFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/subscription" element={<Subscription />} />
               <Route path="/contact" element={<Contact />} />
+
+              <Route element={<PublicOnlyRoute />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+              </Route>
+
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/business-analytics" element={<BusinessAnalytics />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/subscription" element={<Subscription />} />
+              </Route>
+
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

@@ -124,7 +124,7 @@ export class GeneralService {
       2  // completed challenges
     );
 
-    let grade: 'A+' | 'A' | 'B' | 'C' | 'D' = 'B';
+    let grade: 'A+' | 'A' | 'B' | 'C' | 'D';
     if (computedScore >= 90) grade = 'A+';
     else if (computedScore >= 80) grade = 'A';
     else if (computedScore >= 70) grade = 'B';
@@ -172,7 +172,7 @@ export class GeneralService {
       return [];
     }
 
-    let targetDeviceIds: string[] = [];
+    let targetDeviceIds: string[];
 
     if (options?.deviceId) {
       await deviceService.validateDeviceOwnership(options.deviceId, context, customClient);

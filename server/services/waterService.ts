@@ -63,7 +63,7 @@ export class WaterService {
 
     for (const row of rows) {
       const date = new Date(row.recorded_at);
-      let key = '';
+      let key: string;
 
       if (period === 'hourly') {
         key = `${date.toISOString().slice(0, 13)}:00:00Z`;

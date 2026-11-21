@@ -80,7 +80,7 @@ export const DashboardAssistantDrawer: React.FC<DashboardAssistantDrawerProps> =
   onClose,
   selectedDeviceId,
 }) => {
-  const { user } = useApp();
+  const { isAuthenticated } = useApp();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
       id: 'welcome-01',
@@ -101,7 +101,7 @@ export const DashboardAssistantDrawer: React.FC<DashboardAssistantDrawerProps> =
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [tokenInput, setTokenInput] = useState('');
   const [showTokenSettings, setShowTokenSettings] = useState(false);
-  const [hasAuthToken, setHasAuthToken] = useState<boolean>(true);
+  const [hasAuthToken, setHasAuthToken] = useState<boolean>(isAuthenticated);
 
   const drawerRef = useRef<HTMLElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -121,7 +121,7 @@ export const DashboardAssistantDrawer: React.FC<DashboardAssistantDrawerProps> =
       previousFocusRef.current.focus();
       previousFocusRef.current = null;
     }
-  }, [isOpen]);
+  }, [isOpen, isAuthenticated]);
 
   // Auto-scroll on new message
   useEffect(() => {

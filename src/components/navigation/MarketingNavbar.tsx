@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
+import { useApp } from '../../context/AppContext';
 import { Menu, X, ArrowUpRight, Droplet, Zap } from 'lucide-react';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
 
@@ -14,6 +15,7 @@ export const MarketingNavbar: React.FC<MarketingNavbarProps> = ({
   darkHero = false,
 }) => {
   const { theme, setTheme } = useTheme();
+  const { isAuthenticated } = useApp();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -54,6 +56,7 @@ export const MarketingNavbar: React.FC<MarketingNavbarProps> = ({
     { label: 'Home', path: '/' },
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Analytics', path: '/analytics' },
+    { label: 'Business BI', path: '/business-analytics' },
     { label: 'Community', path: '/community' },
     { label: 'Pricing', path: '/subscription' },
     { label: 'Contact', path: '/contact' },
@@ -140,10 +143,10 @@ export const MarketingNavbar: React.FC<MarketingNavbarProps> = ({
 
           {/* Primary CTA */}
           <Link
-            to="/dashboard"
+            to={isAuthenticated ? '/dashboard' : '/login'}
             className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 lg:px-4 py-2 rounded-lg bg-[#174A8B] hover:bg-[#123A6F] text-white transition-all shadow-xs hover:shadow cursor-pointer whitespace-nowrap"
           >
-            <span>Live Console</span>
+            <span>{isAuthenticated ? 'Live Console' : 'Sign In'}</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
 
@@ -191,11 +194,11 @@ export const MarketingNavbar: React.FC<MarketingNavbarProps> = ({
           })}
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
             <Link
-              to="/dashboard"
+              to={isAuthenticated ? '/dashboard' : '/login'}
               onClick={() => setMobileMenuOpen(false)}
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-[#174A8B] text-white text-sm font-semibold shadow-xs"
             >
-              <span>Open IoT Dashboard</span>
+              <span>{isAuthenticated ? 'Open IoT Dashboard' : 'Sign In to Console'}</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>

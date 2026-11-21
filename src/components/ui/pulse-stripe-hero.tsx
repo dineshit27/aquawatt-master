@@ -167,7 +167,7 @@ export default function PulseStripeHero({
     { value: 1199, prefix: "₹", label: "Enterprise Eco (annual / mo)" },
     { value: 365, suffix: "d", label: "Pro telemetry retention" },
   ],
-  logos = ["ESP32 DevKit", "YF-S201 Flow", "SCT-013 CT Clamp", "MQTT Pub/Sub", "Supabase Postgres", "INR ₹ Tariff Engine", "CSV & JSON Audits", "Gemini Insights"],
+  logos = ["ESP32 DevKit", "FS-S401 Flow", "16x2 Character LCD", "INA219 (Calibration Pending)", "MQTT Pub/Sub", "Supabase Postgres", "INR ₹ Tariff Engine", "CSV & JSON Audits"],
   statement = "One telemetry console from your first ESP32 breadboard rig to full campus sub-metering—with transparent tiers built for real hardware.",
   statementLabel = "Why AquaWatt Plans",
   palette = "mercury",

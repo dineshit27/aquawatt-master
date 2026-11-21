@@ -5,21 +5,19 @@ import { useApp } from '../context/AppContext';
 import { SUBSCRIPTION_PLANS, FAQ_ITEMS } from '../data/mockData';
 import {
   CheckCircle2,
-  XCircle,
-  HelpCircle,
-  CreditCard,
-  ShieldCheck,
-  Zap,
   ArrowRight,
-  Check,
   ChevronDown,
-  Layers,
 } from 'lucide-react';
-import { Badge } from '../components/common/Badge';
 import { Modal } from '../components/common/Modal';
 import PulseStripeHero from '../components/ui/pulse-stripe-hero';
 import { Cta69 } from '../components/ui/cta69';
 import { resolveSubscriptionQueryParams } from '../utils/dashboardMetrics';
+import {
+  getPlanPrice,
+  formatPlanPriceLabel,
+  resolvePlanActionLabel,
+  getPlanComparisonRows,
+} from '../utils/subscriptionHelpers';
 
 export const Subscription: React.FC = () => {
   const { currentPlanId, changeSubscriptionPlan, showToast } = useApp();
@@ -71,11 +69,7 @@ export const Subscription: React.FC = () => {
   const pendingPlanObj = selectedPlanToChange
     ? SUBSCRIPTION_PLANS.find(p => p.id === selectedPlanToChange)
     : null;
-  const pendingPlanPrice = pendingPlanObj
-    ? billingCycle === 'yearly'
-      ? pendingPlanObj.priceYearlyMonthlyEquivalent
-      : pendingPlanObj.priceMonthly
-    : 0;
+  const comparisonRows = getPlanComparisonRows();
 
   return (
     <AppLayout
@@ -171,10 +165,7 @@ export const Subscription: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {SUBSCRIPTION_PLANS.map(plan => {
             const isCurrent = currentPlanId === plan.id;
-            const price =
-              billingCycle === 'yearly'
-                ? plan.priceYearlyMonthlyEquivalent
-                : plan.priceMonthly;
+            const price = getPlanPrice(plan, billingCycle);
 
             return (
               <div
@@ -239,13 +230,7 @@ export const Subscription: React.FC = () => {
                           : 'border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
-                      <span>
-                        {plan.id === 'premium'
-                          ? 'Upgrade to Enterprise'
-                          : plan.id === 'free'
-                          ? 'Downgrade to Starter'
-                          : 'Switch to Pro'}
-                      </span>
+                      <span>{resolvePlanActionLabel(plan.id)}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   )}
@@ -270,54 +255,34 @@ export const Subscription: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  Sensor Input Capacity
-                </td>
-                <td className="py-3 px-4 text-slate-500">2 nodes</td>
-                <td className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">12 nodes</td>
-                <td className="py-3 px-4 text-slate-800 dark:text-slate-200">Unlimited</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  Telemetry Retention
-                </td>
-                <td className="py-3 px-4 text-slate-500">7 Days</td>
-                <td className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">365 Days</td>
-                <td className="py-3 px-4 text-slate-800 dark:text-slate-200">Unlimited (Cold Storage)</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  Anomaly Alert Dispatch Speed
-                </td>
-                <td className="py-3 px-4 text-slate-500">15 min batch</td>
-                <td className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">&lt; 60 seconds</td>
-                <td className="py-3 px-4 text-slate-800 dark:text-slate-200">Sub-second simulated alerts</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  Simulated Valve Isolation Test
-                </td>
-                <td className="py-3 px-4 text-slate-400">Manual Only</td>
-                <td className="py-3 px-4 text-[#237A57] dark:text-emerald-400 font-bold">Frontend Demonstration</td>
-                <td className="py-3 px-4 text-[#237A57] dark:text-emerald-400 font-bold">Multi-Zone Demo</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  Telemetry Audit Export
-                </td>
-                <td className="py-3 px-4 text-slate-400">Not Included</td>
-                <td className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">CSV Digest</td>
-                <td className="py-3 px-4 text-slate-800 dark:text-slate-200">CSV &amp; JSON Audit Export</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
-                  REST &amp; MQTT Bridge
-                </td>
-                <td className="py-3 px-4 text-slate-400">Not Included</td>
-                <td className="py-3 px-4 text-slate-400">Read-Only</td>
-                <td className="py-3 px-4 text-[#237A57] dark:text-emerald-400 font-bold">Planned Webhook Blueprint</td>
-              </tr>
+              {comparisonRows.map(row => (
+                <tr key={row.feature}>
+                  <td className="py-3 px-4 font-sans font-medium text-slate-800 dark:text-slate-200">
+                    {row.feature}
+                  </td>
+                  <td className="py-3 px-4 text-slate-500">{row.freeLabel}</td>
+                  <td
+                    className={`py-3 px-4 font-bold ${
+                      row.standardAccent === 'green'
+                        ? 'text-[#237A57] dark:text-emerald-400'
+                        : row.standardAccent === 'muted'
+                        ? 'text-slate-400 font-normal'
+                        : 'text-[#174A8B] dark:text-sky-400'
+                    }`}
+                  >
+                    {row.standardLabel}
+                  </td>
+                  <td
+                    className={`py-3 px-4 ${
+                      row.premiumAccent === 'green'
+                        ? 'text-[#237A57] dark:text-emerald-400 font-bold'
+                        : 'text-slate-800 dark:text-slate-200'
+                    }`}
+                  >
+                    {row.premiumLabel}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -370,11 +335,7 @@ export const Subscription: React.FC = () => {
             <p className="text-slate-600 dark:text-slate-300">
               Are you sure you want to switch to{' '}
               <span className="font-bold text-slate-900 dark:text-white">
-                {pendingPlanObj
-                  ? `${pendingPlanObj.name} (₹${pendingPlanPrice.toLocaleString('en-IN')}/mo${
-                      billingCycle === 'yearly' && pendingPlanPrice > 0 ? ' · billed annually' : ''
-                    })`
-                  : ''}
+                {pendingPlanObj ? formatPlanPriceLabel(pendingPlanObj, billingCycle) : ''}
               </span>
               ?
             </p>
