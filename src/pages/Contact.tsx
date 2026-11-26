@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { Seo } from '../components/common/Seo';
 import { useApp } from '../context/AppContext';
 import {
   Mail,
@@ -72,6 +73,10 @@ export const Contact: React.FC = () => {
         />
       }
     >
+      <Seo
+        title="Contact AquaWatt — Support & Hardware Questions"
+        description="Get in touch about AquaWatt: sensor setup, dashboard questions and project enquiries."
+      />
       <div className="space-y-8 max-w-6xl mx-auto">
         {/* 3 SUPPORT CHANNELS */}
         <div id="contact-channels" className="grid grid-cols-1 sm:grid-cols-3 gap-4 scroll-mt-6">

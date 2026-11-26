@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { Seo } from '../components/common/Seo';
 import { useApp } from '../context/AppContext';
 import {
   Trophy,
@@ -70,6 +71,7 @@ export const Community: React.FC = () => {
       hero={<KindredHeroSection onJoinCircle={scrollToChallenges} />}
       cta={<CommunityContactCtaSection />}
     >
+      <Seo title="Community — AquaWatt" description="AquaWatt conservation sprints and facility challenges." noindex />
       <div className="space-y-6">
         {/* Header Banner */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 gap-3">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
+import { Seo } from '../components/common/Seo';
 import { useApp } from '../context/AppContext';
 import { SUBSCRIPTION_PLANS } from '../data/mockData';
 import {
@@ -158,6 +159,7 @@ export const Subscription: React.FC = () => {
         />
       }
     >
+      <Seo title="Subscription Plans — AquaWatt" description="Manage your AquaWatt telemetry subscription." noindex />
       <div className="space-y-8 max-w-6xl mx-auto">
         {/* Header */}
         <div id="subscription-plans" className="text-center max-w-2xl mx-auto scroll-mt-6">

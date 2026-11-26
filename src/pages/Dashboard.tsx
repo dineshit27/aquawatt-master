@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { Seo } from '../components/common/Seo';
 import { KpiCard } from '../components/cards/KpiCard';
 import { ResourceMetricCard } from '../components/cards/ResourceMetricCard';
 import { DashboardTelemetryVisualizer } from '../components/dashboard/DashboardTelemetryVisualizer';
@@ -108,6 +109,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <AppLayout title="Facility Resource Console">
+      <Seo title="Facility Dashboard — AquaWatt" description="AquaWatt ESP32 water and energy telemetry console." noindex />
       <div className="space-y-5">
         {/* TOP HEADER & TOOLBAR */}
         <div className="flex flex-col xl:flex-row xl:items-center justify-between pb-3 gap-3 border-b border-slate-200/80 dark:border-slate-800/80">

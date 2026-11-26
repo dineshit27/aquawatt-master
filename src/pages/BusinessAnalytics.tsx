@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useApp } from '../context/AppContext';
+import { Seo } from '../components/common/Seo';
 import { BusinessDataSourceMode } from '../types/businessAnalytics';
 import {
   buildBusinessAnalyticsDataset,
@@ -247,6 +248,7 @@ export const BusinessAnalytics: React.FC = () => {
       className="aw-folio-scope"
       data-aw-folio-palette={palette}
     >
+      <Seo title="Business BI — AquaWatt" description="AquaWatt business resource and telemetry audit view." noindex />
       <a href="#s01" className="skip-link">
         Skip to executive overview
       </a>

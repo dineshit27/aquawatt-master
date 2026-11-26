@@ -4,7 +4,7 @@
  */
 
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
 import { ScrollToTop } from './components/common/ScrollToTop';
@@ -22,6 +22,7 @@ const BusinessAnalytics = lazy(() =>
 const Community = lazy(() => import('./pages/Community').then(m => ({ default: m.Community })));
 const Subscription = lazy(() => import('./pages/Subscription').then(m => ({ default: m.Subscription })));
 const Contact = lazy(() => import('./pages/Contact').then(m => ({ default: m.Contact })));
+const NotFound = lazy(() => import('./pages/NotFound').then(m => ({ default: m.NotFound })));
 
 const RouteFallback = () => (
   <div
@@ -61,7 +62,7 @@ export default function App() {
                 <Route path="/subscription" element={<Subscription />} />
               </Route>
 
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </BrowserRouter>

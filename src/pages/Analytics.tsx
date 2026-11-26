@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { Seo } from '../components/common/Seo';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -256,6 +257,7 @@ export const Analytics: React.FC = () => {
 
   return (
     <AppLayout title="Consumption & Cost Analytics">
+      <Seo title="Analytics — AquaWatt" description="AquaWatt historical water and energy usage analytics." noindex />
       <div className="space-y-5">
         {/* TOP HEADER & FILTERS */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 gap-4 border-b border-slate-200/80 dark:border-slate-800/80">

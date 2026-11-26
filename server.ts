@@ -6,6 +6,7 @@ import { getEnv } from './server/config/env.js';
 import { createMcpServer, type McpInstance } from './server/mcp/server.js';
 import { authService } from './server/services/authService.js';
 import { assistantService } from './server/services/assistantService.js';
+import { registerSeoRoutes, serveSpaWithSeo } from './server/seo.js';
 import {
   UnauthenticatedError,
   InvalidTokenError,
@@ -49,29 +50,65 @@ export async function createApp(options?: CreateAppOptions): Promise<AppServerCo
   });
 
   // CORS configuration
-  const allowedOrigins = env.CORS_ORIGINS.split(',').map(o => o.trim());
+  const allowedOrigins = new Set<string>(
+    env.CORS_ORIGINS.split(',')
+      .map(o => o.trim().replace(/\/+$/, ''))
+      .filter(Boolean)
+  );
+  for (const candidate of [env.APP_URL, process.env.VITE_SITE_URL, process.env.RENDER_EXTERNAL_URL]) {
+    if (!candidate) continue;
+    try {
+      const parsed = new URL(candidate);
+      allowedOrigins.add(parsed.origin);
+    } catch {
+      // ignore non-URL placeholder values
+    }
+  }
+
   app.use(
-    cors({
-      origin: (origin, callback) => {
-        // Allow requests with no origin (e.g. CLI tools, desktop MCP clients, curl)
-        if (!origin) return callback(null, true);
+    cors((req: Request, callback) => {
+      const baseOptions = {
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'last-event-id', 'x-requested-with'],
+        exposedHeaders: ['mcp-session-id', 'WWW-Authenticate'],
+      };
 
-        // Allow localhost and specified origins
-        const isLocalhost =
-          origin.startsWith('http://localhost:') ||
-          origin.startsWith('http://127.0.0.1:') ||
-          origin.startsWith('https://localhost:');
+      const reqOrigin = req.headers.origin;
+      // Allow requests with no origin (e.g. CLI tools, desktop MCP clients, curl, direct navigation)
+      if (!reqOrigin) {
+        return callback(null, { ...baseOptions, origin: true });
+      }
 
-        if (env.NODE_ENV !== 'production' || isLocalhost || allowedOrigins.includes(origin)) {
-          return callback(null, true);
+      const normalizedOrigin = reqOrigin.replace(/\/+$/, '');
+      const isLocalhost =
+        normalizedOrigin.startsWith('http://localhost:') ||
+        normalizedOrigin.startsWith('http://127.0.0.1:') ||
+        normalizedOrigin.startsWith('https://localhost:') ||
+        normalizedOrigin === 'http://localhost' ||
+        normalizedOrigin === 'https://localhost';
+
+      const forwardedHost = (req.headers['x-forwarded-host'] as string | undefined)?.split(',')[0]?.trim();
+      const requestHost = forwardedHost || req.headers.host;
+      let isSameHostOrigin = false;
+      if (requestHost) {
+        try {
+          isSameHostOrigin = new URL(normalizedOrigin).host.toLowerCase() === requestHost.toLowerCase();
+        } catch {
+          isSameHostOrigin = false;
         }
+      }
 
-        return callback(new Error('CORS origin denied'), false);
-      },
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'mcp-session-id', 'last-event-id', 'x-requested-with'],
-      exposedHeaders: ['mcp-session-id', 'WWW-Authenticate'],
+      if (
+        env.NODE_ENV !== 'production' ||
+        isLocalhost ||
+        isSameHostOrigin ||
+        allowedOrigins.has(normalizedOrigin)
+      ) {
+        return callback(null, { ...baseOptions, origin: true });
+      }
+
+      return callback(null, { ...baseOptions, origin: false });
     })
   );
 
@@ -81,6 +118,10 @@ export async function createApp(options?: CreateAppOptions): Promise<AppServerCo
 
   // Initialize AquaWatt MCP Server instance
   const mcp = await createMcpServer();
+
+  // 0. SEO metadata routes (/robots.txt, /sitemap.xml)
+  const publicUrl = (env.APP_URL || `http://${env.HOST}:${env.PORT}`).replace(/\/$/, '');
+  registerSeoRoutes(app, publicUrl);
 
   // 1. Health check endpoint
   app.get('/health', (_req: Request, res: Response) => {
@@ -243,11 +284,7 @@ export async function createApp(options?: CreateAppOptions): Promise<AppServerCo
     viteInstance = vite;
     app.use(vite.middlewares);
   } else if (!shouldSkipVite && env.NODE_ENV === 'production') {
-    const distPath = path.resolve(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+    serveSpaWithSeo(app, path.resolve(process.cwd(), 'dist'), publicUrl);
   }
 
   // 4. Centralized error handling middleware
