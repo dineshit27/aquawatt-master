@@ -48,6 +48,7 @@ interface AppContextType {
   user: UserProfile | null;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (params: SignUpParams) => Promise<{ error?: string; requiresEmailConfirmation?: boolean }>;
+  signInWithOAuth: (provider: 'google' | 'github', redirectTo?: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
   clearAuthError: () => void;
   waterReading: WaterReading;
@@ -154,13 +155,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const meta = (verifiedUser.user_metadata || {}) as Record<string, unknown>;
       const derivedFullName =
-        typeof meta.full_name === 'string' && meta.full_name.trim()
-          ? meta.full_name.trim()
-          : (verifiedUser.email || '').split('@')[0] || 'AquaWatt Operator';
+        (typeof meta.full_name === 'string' && meta.full_name.trim()) ||
+        (typeof meta.name === 'string' && meta.name.trim()) ||
+        (typeof meta.user_name === 'string' && meta.user_name.trim()) ||
+        (typeof meta.preferred_username === 'string' && meta.preferred_username.trim()) ||
+        (verifiedUser.email || '').split('@')[0] ||
+        'AquaWatt Operator';
       const derivedFacilityName =
         typeof meta.facility_name === 'string' && meta.facility_name.trim()
           ? meta.facility_name.trim()
           : 'AquaWatt Facility Console';
+      const derivedAvatarUrl =
+        typeof meta.avatar_url === 'string' && meta.avatar_url.trim() ? meta.avatar_url.trim() : null;
 
       const { data: createdProfile } = await supabase
         .from('profiles')
@@ -170,6 +176,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             email: verifiedUser.email ?? null,
             full_name: derivedFullName,
             facility_name: derivedFacilityName,
+            avatar_url: derivedAvatarUrl,
           },
           { onConflict: 'id' }
         )
@@ -196,6 +203,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const restoreSession = async () => {
       try {
+        if (typeof window !== 'undefined') {
+          const searchParams = new URLSearchParams(window.location.search);
+          const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+          const oauthErrDesc =
+            searchParams.get('error_description') ||
+            hashParams.get('error_description') ||
+            searchParams.get('error') ||
+            hashParams.get('error');
+          if (oauthErrDesc && active) {
+            setAuthError(normalizeAuthErrorMessage(oauthErrDesc));
+          }
+        }
+
         const { data, error } = await client.auth.getSession();
         if (!active) return;
 
@@ -344,6 +364,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     },
     [loadOrProvisionProfile, showToast]
+  );
+
+  const signInWithOAuth = useCallback(
+    async (provider: 'google' | 'github', redirectTo?: string): Promise<{ error?: string }> => {
+      if (!supabase || !isSupabaseConfigured()) {
+        const msg = 'Supabase credentials are not configured in .env.local.';
+        setAuthError(msg);
+        showToast(msg, 'warning');
+        return { error: msg };
+      }
+
+      setAuthError(null);
+      try {
+        const targetUrl =
+          redirectTo ||
+          (typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined);
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo: targetUrl,
+            ...(provider === 'github' ? { scopes: 'read:user user:email' } : {}),
+          },
+        });
+
+        if (error) {
+          const msg = normalizeAuthErrorMessage(error);
+          setAuthError(msg);
+          return { error: msg };
+        }
+
+        if (data?.url && typeof window !== 'undefined') {
+          window.location.assign(data.url);
+        }
+
+        return {};
+      } catch (err) {
+        const msg = normalizeAuthErrorMessage(err);
+        setAuthError(msg);
+        return { error: msg };
+      }
+    },
+    [showToast]
   );
 
   const signOut = useCallback(async () => {
@@ -698,6 +760,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         user,
         signIn,
         signUp,
+        signInWithOAuth,
         signOut,
         clearAuthError,
         waterReading,

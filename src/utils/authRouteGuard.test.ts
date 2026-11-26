@@ -148,6 +148,7 @@ describe('Auth Route Guard & Identity Mapping', () => {
 
     assert.ok(loginHtml.includes('Sign in to your Account'));
     assert.ok(loginHtml.includes('Login with Google'));
+    assert.ok(loginHtml.includes('Login with GitHub'));
     assert.ok(loginHtml.includes('Back to Website'));
     assert.ok(loginHtml.includes('AquaWatt'));
     assert.ok(!loginHtml.includes('Watermelon'));
@@ -172,6 +173,7 @@ describe('Auth Route Guard & Identity Mapping', () => {
 
     assert.ok(signupHtml.includes('Create your Account'));
     assert.ok(signupHtml.includes('Sign up with Google'));
+    assert.ok(signupHtml.includes('Sign up with GitHub'));
     assert.ok(signupHtml.includes('Terms of Service'));
     assert.ok(signupHtml.includes('Privacy Policy'));
     assert.ok(signupHtml.includes('signup-password-strength'));
@@ -209,6 +211,31 @@ describe('Auth Route Guard & Identity Mapping', () => {
     assert.strictEqual(strong.label, 'Strong');
     assert.strictEqual(strong.percent, 100);
     assert.strictEqual(strong.criteriaMetCount, 4);
+  });
+
+  it('maps GitHub OAuth user metadata (user_name, avatar_url) and normalizes OAuth errors', () => {
+    const githubUser = {
+      id: '22222222-2222-4222-a222-222222222222',
+      email: 'dev@github.example',
+      created_at: '2026-11-10T10:00:00Z',
+      user_metadata: {
+        user_name: 'dineshit27',
+        avatar_url: 'https://avatars.githubusercontent.com/u/12345',
+      },
+    } as unknown as SupabaseAuthUser;
+
+    const mapped = mapSupabaseAuthUserToProfile(githubUser, null);
+    assert.strictEqual(mapped.fullName, 'dineshit27');
+    assert.strictEqual(mapped.avatarUrl, 'https://avatars.githubusercontent.com/u/12345');
+
+    assert.ok(
+      normalizeAuthErrorMessage(new Error('Unsupported provider: provider is not enabled')).includes(
+        'not enabled yet in Supabase'
+      )
+    );
+    assert.ok(
+      normalizeAuthErrorMessage(new Error('access_denied')).includes('cancelled or denied')
+    );
   });
 });
 

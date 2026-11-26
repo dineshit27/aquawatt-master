@@ -64,6 +64,9 @@ export function mapSupabaseAuthUserToProfile(
   const fullName =
     (profileRow?.full_name && profileRow.full_name.trim()) ||
     (typeof meta.full_name === 'string' && meta.full_name.trim()) ||
+    (typeof meta.name === 'string' && meta.name.trim()) ||
+    (typeof meta.user_name === 'string' && meta.user_name.trim()) ||
+    (typeof meta.preferred_username === 'string' && meta.preferred_username.trim()) ||
     fallbackName;
 
   const facilityName =
@@ -82,7 +85,10 @@ export function mapSupabaseAuthUserToProfile(
     id: authUser.id,
     fullName,
     email,
-    avatarUrl: profileRow?.avatar_url || '',
+    avatarUrl:
+      profileRow?.avatar_url ||
+      (typeof meta.avatar_url === 'string' ? meta.avatar_url : '') ||
+      '',
     facilityName,
     facilityType: normalizeFacilityType(profileRow?.facility_type),
     address: profileRow?.address || 'ESP32 Telemetry Bench',
@@ -119,6 +125,12 @@ export function normalizeAuthErrorMessage(error: unknown): string {
   }
   if (lower.includes('password') && lower.includes('6')) {
     return 'Password must be at least 6 characters long.';
+  }
+  if (lower.includes('provider is not enabled') || lower.includes('unsupported provider')) {
+    return 'This OAuth provider is not enabled yet in Supabase. Enable it under Authentication → Providers.';
+  }
+  if (lower.includes('access_denied') || lower.includes('access denied')) {
+    return 'OAuth authorization was cancelled or denied.';
   }
   if (lower.includes('failed to fetch') || lower.includes('network')) {
     return 'Unable to reach Supabase authentication service. Check your connection and project URL.';
