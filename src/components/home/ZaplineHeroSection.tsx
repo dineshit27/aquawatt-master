@@ -1,8 +1,9 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { ContainerScroll } from '../ui/container-scroll-animation';
+import { BrandLogo } from '../common/BrandLogo';
 import {
-  Droplet,
   Search,
   LayoutDashboard,
   ShieldCheck,
@@ -81,27 +82,15 @@ export const ZaplineHeroSection: React.FC = () => {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState('dashboard');
 
-  // Keep unitless scale factor --zap-s synchronized with hero container dimensions
-  useLayoutEffect(() => {
-    const root = heroRootRef.current;
-    if (!root) return;
-
-    const updateScale = () => {
-      const vw = root.clientWidth || window.innerWidth;
-      const vh = root.clientHeight || window.innerHeight;
-      const s = Math.min(vw / 1672, vh / 941);
-      root.style.setProperty('--zap-s', s.toFixed(6));
-    };
-
-    updateScale();
-    const ro = new ResizeObserver(updateScale);
-    ro.observe(root);
-    window.addEventListener('resize', updateScale);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', updateScale);
-    };
-  }, []);
+  const sidebarBreadcrumbs: Record<string, string> = {
+    search: 'Node Locator · ESP32-Grid',
+    dashboard: 'Telemetry Overview',
+    valves: 'Shutoff Valve Simulator',
+    alerts: 'Leak Anomaly Surveillance',
+    meters: 'Facility Submeters',
+    reports: 'Audit Ledger Exports',
+    settings: 'Calibration & MQTT Setup',
+  };
 
   // Detect prefers-reduced-motion
   useEffect(() => {
@@ -288,16 +277,10 @@ export const ZaplineHeroSection: React.FC = () => {
           0.6,
         )
         .fromTo(
-          '.zap-anim-dashboard',
-          { opacity: 0, y: 54 },
-          { opacity: 1, y: 0, duration: 0.85 },
-          0.55,
-        )
-        .fromTo(
           '.zap-anim-dash-item',
           { opacity: 0, y: 14 },
           { opacity: 1, y: 0, duration: 0.5, stagger: 0.07 },
-          0.8,
+          0.7,
         );
     }, root);
 
@@ -327,9 +310,9 @@ export const ZaplineHeroSection: React.FC = () => {
         className="zap-stars-canvas"
       />
 
-      {/* Scaled 1672x941 desktop stage / stacked mobile layout */}
+      {/* Responsive Cosmic Stage with ContainerScroll 3D Perspective */}
       <div className="zap-stage">
-        {/* Top Planet Rim Layer (1672x717 on desktop) */}
+        {/* Top Planet Rim Layer */}
         <div className="zap-planet-layer" aria-hidden="true">
           <canvas ref={rimCanvasRef} className="zap-rim-canvas" />
           {!reducedMotion && (
@@ -347,124 +330,144 @@ export const ZaplineHeroSection: React.FC = () => {
           <div className="zap-planet-vignette" />
         </div>
 
-        {/* Centered Headline, Lede & CTA Buttons */}
-        <div className="zap-copy">
-          <h1 className="zap-headline">
-            <span className="zap-headline-line zap-anim-line-1">
-              <span className="zap-brand-grad">Every Drop.</span>{' '}
-              <span className="zap-smarter">Every Watt.</span>
-            </span>
-            <span className="zap-headline-line zap-anim-line-2">
-              Zero Blind Spots.
-            </span>
-          </h1>
+        <ContainerScroll
+          className="relative z-10 flex items-end justify-center px-4 sm:px-6 lg:px-8 pt-28 pb-0 sm:pt-36 lg:pt-40 sm:pb-0"
+          perspectiveClassName="w-full max-w-[1220px] mx-auto relative"
+          scrollOffset={['start start', 'end center']}
+          rotateRange={[16, 0]}
+          translateRange={[0, 0]}
+          mobileScaleRange={[1, 1]}
+          desktopScaleRange={[1, 1]}
+          cardTransformOrigin="bottom center"
+          headerClassName="max-w-5xl mx-auto text-center mb-8 sm:mb-10"
+          cardClassName="max-w-[1204px] mx-auto w-full h-[17.5rem] sm:h-[20.5rem] lg:h-[22rem] border border-b-0 border-blue-500/40 p-1.5 pb-0 sm:p-2.5 sm:pb-0 bg-[#090e1c]/90 rounded-t-[18px] sm:rounded-t-[24px] rounded-b-none shadow-2xl relative"
+          cardInnerClassName="h-full w-full overflow-hidden rounded-t-[13px] sm:rounded-t-[18px] rounded-b-none bg-[#070a10] border border-b-0 border-white/10"
+          cardTopSlot={
+            <img
+              src={DASHBOARD_GLOW_URL}
+              alt=""
+              aria-hidden="true"
+              className="zap-dashboard-glow"
+            />
+          }
+          titleComponent={
+            <div className="zap-copy">
+              <h1 className="zap-headline">
+                <span className="zap-headline-line zap-anim-line-1">
+                  <span className="zap-brand-grad">Every Drop.</span>{' '}
+                  <span className="zap-smarter">Every Watt.</span>
+                </span>
+                <span className="zap-headline-line zap-anim-line-2">
+                  Zero Blind Spots.
+                </span>
+              </h1>
 
-          <p className="zap-lede zap-anim-lede text-balance">
-            Pulse-level ESP32 water flow, electrical load telemetry, and Gemini insights—unified in one crisp console.
-          </p>
+              <p className="zap-lede zap-anim-lede text-balance">
+                Pulse-level ESP32 water flow, electrical load telemetry, and Gemini insights—unified in one crisp console.
+              </p>
 
-          <div className="zap-actions zap-anim-actions">
-            <Link to="/dashboard" className="zap-pill-violet zap-hero-btn">
-              Open Console
-            </Link>
-            <a
-              href="#bento-grid"
-              onClick={(e) => {
-                e.preventDefault();
-                handleAnchorClick('#bento-grid');
-              }}
-              className="zap-pill-dark zap-hero-btn"
-            >
-              Explore Stack
-            </a>
-          </div>
-        </div>
-
-        {/* Bottom Product Dashboard Panel (starts at y = 651, 1204px wide) */}
-        <div className="zap-dashboard-wrap zap-anim-dashboard">
-          {/* Screen-blended glow strip sitting right above dashboard top edge */}
-          <img
-            src={DASHBOARD_GLOW_URL}
-            alt=""
-            aria-hidden="true"
-            className="zap-dashboard-glow"
-          />
-
-          <div className="zap-dashboard-panel">
-            {/* Thin glowing blue edge line */}
-            <div className="zap-dashboard-top-line" aria-hidden="true" />
-
-            {/* Left Sidebar */}
-            <aside className="zap-sidebar zap-anim-dash-item">
-              <div className="zap-sidebar-brand">
-                <div className="zap-sidebar-brand-left">
-                  <span className="zap-sidebar-mark">
-                    <Droplet size={13} />
-                  </span>
-                  <span>AquaWatt</span>
-                </div>
-                <Settings size={14} className="zap-muted-icon" />
-              </div>
-
-              <div className="zap-sidebar-group">
-                {SIDEBAR_PRIMARY.map((item) => {
-                  const Icon = item.icon;
-                  const active = activeSidebar === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setActiveSidebar(item.id)}
-                      className={`zap-sidebar-item ${active ? 'is-active' : ''}`}
-                    >
-                      <Icon size={14} />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="zap-sidebar-divider" />
-
-              <div className="zap-sidebar-group">
-                {SIDEBAR_SECONDARY.map((item) => {
-                  const Icon = item.icon;
-                  const active = activeSidebar === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setActiveSidebar(item.id)}
-                      className={`zap-sidebar-item ${active ? 'is-active' : ''}`}
-                    >
-                      <Icon size={14} />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="zap-promo-card">
-                <div className="zap-promo-head">
-                  <Sparkles size={13} className="zap-promo-spark" />
-                  <span>AquaWatt Pro</span>
-                </div>
-                <p>FS-S401 flow alerts, Gemini anomaly guard &amp; multi-node metering.</p>
-                <Link to="/subscription" className="zap-upgrade-pill">
-                  Upgrade
+              <div className="zap-actions zap-anim-actions">
+                <Link to="/dashboard" className="zap-pill-violet zap-hero-btn">
+                  Open Console
                 </Link>
+                <a
+                  href="#bento-grid"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAnchorClick('#bento-grid');
+                  }}
+                  className="zap-pill-dark zap-hero-btn"
+                >
+                  Explore Stack
+                </a>
               </div>
-            </aside>
+            </div>
+          }
+        >
+          <div className="zap-dashboard-wrap">
+            <div className="zap-dashboard-panel">
+              {/* Thin glowing blue edge line */}
+              <div className="zap-dashboard-top-line" aria-hidden="true" />
 
-            {/* Right Main Dashboard Content */}
-            <div className="zap-dash-main">
-              {/* Top Bar */}
-              <div className="zap-dash-topbar zap-anim-dash-item">
-                <div className="zap-dash-topbar-left">
-                  <span className="zap-dash-crumb">Telemetry Overview</span>
-                  <span className="zap-dash-live-dot" />
-                  <span className="zap-dash-net">ESP32-Grid · 14ms</span>
+              {/* Left Sidebar */}
+              <aside className="zap-sidebar zap-anim-dash-item">
+                <div className="zap-sidebar-brand">
+                  <div className="zap-sidebar-brand-left">
+                    <span className="zap-sidebar-mark">
+                      <BrandLogo
+                        size="xs"
+                        decorative
+                        className="!w-[22px] !h-[22px] !p-[1.5px] !rounded-[6px] !border-white/20"
+                      />
+                    </span>
+                    <span>AquaWatt</span>
+                  </div>
+                  <Settings size={14} className="zap-muted-icon" />
                 </div>
+
+                <div className="zap-sidebar-group">
+                  {SIDEBAR_PRIMARY.map((item) => {
+                    const Icon = item.icon;
+                    const active = activeSidebar === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setActiveSidebar(item.id)}
+                        className={`zap-sidebar-item ${active ? 'is-active' : ''}`}
+                      >
+                        <Icon size={14} />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="zap-sidebar-divider" />
+
+                <div className="zap-sidebar-group">
+                  {SIDEBAR_SECONDARY.map((item) => {
+                    const Icon = item.icon;
+                    const active = activeSidebar === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        aria-pressed={active}
+                        onClick={() => setActiveSidebar(item.id)}
+                        className={`zap-sidebar-item ${active ? 'is-active' : ''}`}
+                      >
+                        <Icon size={14} />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="zap-promo-card">
+                  <div className="zap-promo-head">
+                    <Sparkles size={13} className="zap-promo-spark" />
+                    <span>AquaWatt Pro</span>
+                  </div>
+                  <p>FS-S401 flow alerts, Gemini anomaly guard &amp; multi-node metering.</p>
+                  <Link to="/subscription" className="zap-upgrade-pill">
+                    Upgrade
+                  </Link>
+                </div>
+              </aside>
+
+              {/* Right Main Dashboard Content */}
+              <div className="zap-dash-main">
+                {/* Top Bar */}
+                <div className="zap-dash-topbar zap-anim-dash-item">
+                  <div className="zap-dash-topbar-left">
+                    <span className="zap-dash-crumb">
+                      {sidebarBreadcrumbs[activeSidebar] ?? 'Telemetry Overview'}
+                    </span>
+                    <span className="zap-dash-live-dot" />
+                    <span className="zap-dash-net">ESP32-Grid · 14ms</span>
+                  </div>
 
                 <div className="zap-dash-topbar-right">
                   <span className="zap-icon-chip" aria-hidden="true">
@@ -686,10 +689,15 @@ export const ZaplineHeroSection: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                </div>
               </div>
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#070a10] via-[#070a10]/65 to-transparent z-10"
+              />
             </div>
           </div>
-        </div>
+        </ContainerScroll>
       </div>
     </section>
   );

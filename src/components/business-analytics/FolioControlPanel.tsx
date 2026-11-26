@@ -268,7 +268,7 @@ export const FolioControlPanel: React.FC<FolioControlPanelProps> = ({
             </button>
           </div>
           <p className="mono-meta text-[11px] opacity-75">
-            Shortcuts: J / K next/prev section · 1–9 jump directly · G toggle grid · Esc close drawers.
+            Shortcuts: J / K next/prev section · 1–9 / 0 jump directly · G toggle grid · Esc close drawers.
           </p>
         </section>
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Droplet,
-  Zap,
   LayoutDashboard,
   BarChart3,
   Users2,
@@ -15,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useTheme } from '../../context/ThemeContext';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const AppSidebar: React.FC = () => {
   const location = useLocation();
@@ -46,15 +45,14 @@ export const AppSidebar: React.FC = () => {
         <Link
           to="/"
           title="AquaWatt — Return to Homepage"
+          aria-label="AquaWatt — Return to Homepage"
           className="group relative flex items-center justify-center p-1 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition-all"
         >
-          <div
-            className="relative w-9 h-9 rounded-xl dark:bg-sky-600 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform ring-1 ring-sky-300/40 shrink-0"
-            style={isDark ? undefined : { backgroundColor: 'var(--aw-accent)' }}
-          >
-            <Droplet className="w-4 h-4 fill-white/90" />
-            <Zap className="w-2.5 h-2.5 absolute top-1 right-1 text-emerald-300 fill-emerald-300" />
-          </div>
+          <BrandLogo
+            size="md"
+            decorative
+            className="group-hover:scale-105 transition-transform ring-1 ring-slate-200/70 dark:ring-sky-400/25"
+          />
         </Link>
 
         {/* Vertical Icon Navigation */}

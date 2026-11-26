@@ -1,8 +1,16 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
+import { ThemeProvider } from '../context/ThemeContext.js';
+import { AppProvider } from '../context/AppContext.js';
+import { Login } from '../pages/Login.js';
+import { Signup } from '../pages/Signup.js';
 import {
   buildPostLoginRedirectPath,
+  evaluatePasswordStrength,
   evaluateProtectedRoute,
   evaluatePublicOnlyRoute,
   mapSupabaseAuthUserToProfile,
@@ -120,4 +128,87 @@ describe('Auth Route Guard & Identity Mapping', () => {
       normalizeAuthErrorMessage(new Error('Email not confirmed')).includes('confirm your email')
     );
   });
+
+  it('renders split-screen Login and Signup pages cleanly via SSR with AquaWatt branding', () => {
+    const loginHtml = renderToString(
+      React.createElement(
+        ThemeProvider,
+        null,
+        React.createElement(
+          AppProvider,
+          null,
+          React.createElement(
+            MemoryRouter,
+            { initialEntries: ['/login'] },
+            React.createElement(Login)
+          )
+        )
+      )
+    );
+
+    assert.ok(loginHtml.includes('Sign in to your Account'));
+    assert.ok(loginHtml.includes('Login with Google'));
+    assert.ok(loginHtml.includes('Back to Website'));
+    assert.ok(loginHtml.includes('AquaWatt'));
+    assert.ok(!loginHtml.includes('Watermelon'));
+    assert.ok(!loginHtml.includes('watermelon.sh'));
+    assert.ok(!loginHtml.includes('signup-password-strength'));
+
+    const signupHtml = renderToString(
+      React.createElement(
+        ThemeProvider,
+        null,
+        React.createElement(
+          AppProvider,
+          null,
+          React.createElement(
+            MemoryRouter,
+            { initialEntries: ['/signup'] },
+            React.createElement(Signup)
+          )
+        )
+      )
+    );
+
+    assert.ok(signupHtml.includes('Create your Account'));
+    assert.ok(signupHtml.includes('Sign up with Google'));
+    assert.ok(signupHtml.includes('Terms of Service'));
+    assert.ok(signupHtml.includes('Privacy Policy'));
+    assert.ok(signupHtml.includes('signup-password-strength'));
+    assert.ok(signupHtml.includes('role="progressbar"'));
+    assert.ok(signupHtml.includes('8+ characters'));
+    assert.ok(!signupHtml.includes('Watermelon'));
+    assert.ok(!signupHtml.includes('30 days free trial'));
+  });
+
+  it('evaluates password strength levels accurately in real time', () => {
+    const empty = evaluatePasswordStrength('');
+    assert.strictEqual(empty.level, 'empty');
+    assert.strictEqual(empty.percent, 0);
+
+    const tooShort = evaluatePasswordStrength('Ab1!');
+    assert.strictEqual(tooShort.level, 'weak');
+    assert.strictEqual(tooShort.label, 'Too short');
+    assert.strictEqual(tooShort.percent, 25);
+
+    const weak = evaluatePasswordStrength('abcdef');
+    assert.strictEqual(weak.level, 'weak');
+    assert.strictEqual(weak.label, 'Weak');
+    assert.strictEqual(weak.percent, 25);
+
+    const fair = evaluatePasswordStrength('abcdefgh1');
+    assert.strictEqual(fair.level, 'fair');
+    assert.strictEqual(fair.percent, 50);
+
+    const good = evaluatePasswordStrength('Abcdefgh1');
+    assert.strictEqual(good.level, 'good');
+    assert.strictEqual(good.percent, 75);
+
+    const strong = evaluatePasswordStrength('AquaWatt#2026');
+    assert.strictEqual(strong.level, 'strong');
+    assert.strictEqual(strong.label, 'Strong');
+    assert.strictEqual(strong.percent, 100);
+    assert.strictEqual(strong.criteriaMetCount, 4);
+  });
 });
+

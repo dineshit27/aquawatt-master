@@ -2,29 +2,70 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useApp } from '../context/AppContext';
-import { SUBSCRIPTION_PLANS, FAQ_ITEMS } from '../data/mockData';
+import { SUBSCRIPTION_PLANS } from '../data/mockData';
 import {
   CheckCircle2,
   ArrowRight,
-  ChevronDown,
 } from 'lucide-react';
 import { Modal } from '../components/common/Modal';
-import PulseStripeHero from '../components/ui/pulse-stripe-hero';
+import FluxPay, {
+  type FluxPayStat,
+  type FluxPayTransfer,
+} from '../components/ui/fluxpay';
 import { Cta69 } from '../components/ui/cta69';
+import { FAQ } from '../components/ui/faq-tabs';
 import { resolveSubscriptionQueryParams } from '../utils/dashboardMetrics';
 import {
   getPlanPrice,
   formatPlanPriceLabel,
   resolvePlanActionLabel,
   getPlanComparisonRows,
+  SUBSCRIPTION_FAQ_CATEGORIES,
+  SUBSCRIPTION_FAQ_DATA,
 } from '../utils/subscriptionHelpers';
+
+const SUBSCRIPTION_HERO_STATS: FluxPayStat[] = [
+  { value: 3, label: 'telemetry plan tiers' },
+  { value: 20, suffix: '%', label: 'annual billing savings' },
+  { value: 365, suffix: 'd', label: 'Standard Pro retention' },
+];
+
+const SUBSCRIPTION_HERO_TRANSFERS: FluxPayTransfer[] = [
+  {
+    route: 'Standard Pro · 12-Mo Annual',
+    from: { code: 'MO', symbol: 'M', amount: 12, decimals: 0 },
+    to: { code: 'INR', symbol: '₹', decimals: 0 },
+    rate: 399,
+    settled: 'Saves ₹1,200 / yr',
+  },
+  {
+    route: 'Enterprise Eco · 12-Mo Annual',
+    from: { code: 'MO', symbol: 'M', amount: 12, decimals: 0 },
+    to: { code: 'INR', symbol: '₹', decimals: 0 },
+    rate: 1199,
+    settled: 'Saves ₹3,600 / yr',
+  },
+  {
+    route: 'Water Sub-Meter · Sample Tariff',
+    from: { code: 'kL', symbol: 'L', amount: 100, decimals: 0 },
+    to: { code: 'INR', symbol: '₹', decimals: 0 },
+    rate: 25,
+    settled: 'Municipal sample rate',
+  },
+  {
+    route: 'Energy Sub-Meter · Sample Tariff',
+    from: { code: 'kWh', symbol: 'W', amount: 540, decimals: 0 },
+    to: { code: 'INR', symbol: '₹', decimals: 0 },
+    rate: 7.5,
+    settled: 'Grid slab sample rate',
+  },
+];
 
 export const Subscription: React.FC = () => {
   const { currentPlanId, changeSubscriptionPlan, showToast } = useApp();
   const [searchParams, setSearchParams] = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [selectedPlanToChange, setSelectedPlanToChange] = useState<'free' | 'standard' | 'premium' | null>(null);
-  const [faqExpanded, setFaqExpanded] = useState<number | null>(0);
 
   useEffect(() => {
     const planParam = searchParams.get('plan');
@@ -59,13 +100,6 @@ export const Subscription: React.FC = () => {
     }
   };
 
-  const scrollToPlans = () => {
-    const el = document.getElementById('subscription-plans');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   const pendingPlanObj = selectedPlanToChange
     ? SUBSCRIPTION_PLANS.find(p => p.id === selectedPlanToChange)
     : null;
@@ -75,24 +109,36 @@ export const Subscription: React.FC = () => {
     <AppLayout
       title="Subscription & Telemetry Plans"
       hero={
-        <PulseStripeHero
-          fullBleed
-          palette={{ from: '#0d1e38', to: '#060c18', glow: '#38bdf8', ink: '#f8fafc' }}
-          height="clamp(460px, 64svh, 580px)"
-          eyebrow="Transparent Utility Telemetry Plans"
-          title="Predictable plans for *every meter.*"
-          description="Start free on a single ESP32 testbench node, or scale to multi-zone leak surveillance, 365-day analytics, and ESG audit exports."
-          cta={{
-            label: 'Explore Telemetry Plans',
+        <FluxPay
+          showNavbar={false}
+          badge="Transparent Utility Telemetry Plans"
+          titleLines={['Predictable Plans for *Every*', '*Meter*, Built for What’s Next']}
+          titleLinesPhone={['Predictable Plans', 'for *Every Meter*']}
+          primaryAction={{
+            label: 'Explore Plans',
+            href: '#subscription-plans',
             onClick: () => {
               showToast('Scrolling to telemetry subscription tiers', 'info');
-              scrollToPlans();
             },
           }}
-          stats={[]}
-          logos={[]}
-          statement=""
-          statementLabel=""
+          secondaryAction={{
+            label: 'Compare Matrix',
+            href: '#capability-matrix',
+          }}
+          stats={SUBSCRIPTION_HERO_STATS}
+          transfers={SUBSCRIPTION_HERO_TRANSFERS}
+          transferTitle="Tariff & Plan Preview"
+          transferLabel="Sample AquaWatt annual subscription and INR utility sub-meter tariff previews"
+          transferSteps={['Metered', 'Rated', 'Projected']}
+          sendLabel="Input"
+          receiveLabel="Estimate"
+          locale="en-IN"
+          height="clamp(580px, calc(100dvh - 64px), 780px)"
+          fonts={{
+            sans: "var(--font-heading, 'Plus Jakarta Sans', system-ui, sans-serif)",
+            serif: "var(--font-serif, Georgia, 'Times New Roman', serif)",
+            mono: "var(--font-mono, 'Geist Mono', ui-monospace, monospace)",
+          }}
         />
       }
       cta={
@@ -241,7 +287,10 @@ export const Subscription: React.FC = () => {
         </div>
 
         {/* DETAILED SPECIFICATION COMPARISON TABLE */}
-        <div className="rounded-2xl bg-white dark:bg-[#121B2B] border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-xs overflow-x-auto">
+        <div
+          id="capability-matrix"
+          className="scroll-mt-6 rounded-2xl bg-white dark:bg-[#121B2B] border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-xs overflow-x-auto"
+        >
           <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white mb-4">
             Technical Capability Matrix
           </h3>
@@ -287,41 +336,15 @@ export const Subscription: React.FC = () => {
           </table>
         </div>
 
-        {/* FAQ ACCORDION PREVIEW */}
-        <div className="rounded-2xl bg-white dark:bg-[#121B2B] border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-xs">
-          <h3 className="text-base font-bold font-heading text-slate-900 dark:text-white mb-4">
-            Frequently Asked Questions
-          </h3>
-          <div className="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs">
-            {FAQ_ITEMS.map((faq, idx) => {
-              const isOpen = faqExpanded === idx;
-              const panelId = `sub-faq-answer-${idx}`;
-              return (
-                <div key={idx} className="py-3.5">
-                  <button
-                    type="button"
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    onClick={() => setFaqExpanded(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between text-left font-semibold text-slate-900 dark:text-white gap-4 cursor-pointer"
-                  >
-                    <span>{faq.question}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-slate-400 transition-transform ${
-                        isOpen ? 'rotate-180 text-[#174A8B]' : ''
-                      }`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <p id={panelId} className="mt-2 text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/* TABBED FAQ SECTION */}
+        <FAQ
+          id="subscription-faq"
+          title="Frequently Asked Questions"
+          subtitle="Telemetry Plans, Hardware & Governance"
+          categories={SUBSCRIPTION_FAQ_CATEGORIES}
+          faqData={SUBSCRIPTION_FAQ_DATA}
+          className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#121B2B] shadow-xs"
+        />
 
         {/* MODAL: CHANGE PLAN CONFIRMATION */}
         <Modal

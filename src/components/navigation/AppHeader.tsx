@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { DashboardAssistantDrawer } from '../dashboard/DashboardAssistantDrawer';
 import { WorkspaceControlsDrawer } from '../common/WorkspaceControlsDrawer';
+import { BrandLogo } from '../common/BrandLogo';
 import { PALETTE_OPTIONS } from '../../utils/workspaceTheme';
 import type { FolioPaletteId } from '../../types/businessAnalytics';
 
@@ -294,12 +295,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
 
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
           <Link to="/" aria-label="AquaWatt Home" className="md:hidden flex items-center gap-1.5 shrink-0">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-white transition-colors"
-              style={{ backgroundColor: theme === 'dark' ? '#0284C7' : 'var(--aw-accent)' }}
-            >
-              <Droplet className="w-3.5 h-3.5 fill-white" />
-            </div>
+            <BrandLogo size="sm" decorative className="!w-7 !h-7 rounded-lg" />
           </Link>
 
           <div className="min-w-0 flex-1">

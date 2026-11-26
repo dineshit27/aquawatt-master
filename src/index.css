@@ -2192,14 +2192,15 @@ html.dark .swiss-grid-pattern {
 .vela-stage {
   position: relative;
   width: 100%;
-  height: calc(840 * var(--u));
+  min-height: clamp(540px, 78vh, 760px);
   display: flex;
   flex-direction: column;
 }
 
 .vela-panel {
   position: relative;
-  height: 73%;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
   overflow: hidden;
 }
@@ -2254,20 +2255,22 @@ html.dark .swiss-grid-pattern {
 .vela-panel-inner {
   position: relative;
   z-index: 2;
-  width: calc(1440 * var(--u));
+  width: 100%;
   height: 100%;
-  margin: 0 auto;
+  padding: clamp(32px, 5vh, 56px) clamp(24px, 4vw, 60px) clamp(48px, 8vh, 84px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(24px, 4vh, 42px);
 }
 
 .vela-hero h1.vela-headline {
-  position: absolute;
-  left: calc(112 * var(--u));
-  top: calc(116 * var(--u));
+  position: relative;
   margin: 0;
   font-family: "Inter Tight", "Inter", system-ui, sans-serif;
-  font-size: calc(148 * var(--u));
+  font-size: clamp(46px, calc(134 * var(--u)), 138px);
   font-weight: 500;
-  line-height: 0.88;
+  line-height: 0.9;
   letter-spacing: -0.032em;
   color: var(--ink);
 }
@@ -2355,41 +2358,43 @@ html.dark .swiss-grid-pattern {
 }
 
 .vela-action-row {
-  position: absolute;
-  left: calc(112 * var(--u));
-  top: calc(456 * var(--u));
+  position: relative;
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: calc(28 * var(--u));
+  justify-content: space-between;
+  gap: 20px clamp(20px, 3vw, 40px);
 }
 
 .vela-stores {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: calc(12 * var(--u));
+  gap: clamp(10px, 1vw, 14px);
 }
 
 .vela-store-btn {
-  height: calc(58 * var(--u));
-  padding-inline: calc(22 * var(--u));
-  border-radius: calc(7 * var(--u));
+  height: clamp(44px, calc(54 * var(--u)), 56px);
+  padding-inline: clamp(16px, 1.6vw, 24px);
+  border-radius: 8px;
   border: 1.4px solid rgb(13 13 12 / 0.72);
   background: transparent;
   color: var(--ink);
   font-family: "Inter Tight", "Inter", system-ui, sans-serif;
-  font-size: calc(17 * var(--u));
+  font-size: clamp(14px, calc(16.5 * var(--u)), 17px);
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: calc(10 * var(--u));
+  gap: 9px;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease;
 }
 
 .vela-store-btn svg {
-  width: calc(20 * var(--u));
-  height: calc(20 * var(--u));
+  width: clamp(16px, calc(19 * var(--u)), 20px);
+  height: clamp(16px, calc(19 * var(--u)), 20px);
   flex: 0 0 auto;
 }
 
@@ -2400,19 +2405,41 @@ html.dark .swiss-grid-pattern {
   border-color: var(--ink);
 }
 
-.vela-caption {
-  margin: 0;
-  font-size: calc(18.5 * var(--u));
+.vela-action-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px clamp(20px, 2.8vw, 40px);
+}
+
+.vela-action-stat {
+  display: flex;
+  flex-direction: column;
+  padding-left: clamp(12px, 1.2vw, 18px);
+  border-left: 1px solid rgb(13 13 12 / 0.18);
+}
+
+.vela-action-stat-val {
+  font-size: clamp(16px, calc(21 * var(--u)), 22px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.vela-action-stat-lbl {
+  margin-top: 2px;
+  font-size: clamp(12px, calc(13.5 * var(--u)), 14px);
   font-weight: 400;
-  line-height: 1.32;
   color: var(--ink-56);
 }
 
-/* Bottom 27% — Cream Stats Strip with S-curve Notch */
+/* Bottom Cream Stats Strip with S-curve Notch */
 .vela-strip {
   position: relative;
-  height: 27%;
+  flex: 0 0 auto;
   width: 100%;
+  padding-block: clamp(26px, 4vh, 44px);
   background: var(--cream);
   display: flex;
   align-items: center;
@@ -2436,10 +2463,10 @@ html.dark .swiss-grid-pattern {
 
 .vela-scroll-hint {
   position: absolute;
-  right: calc(48 * var(--u));
-  bottom: calc(100% + calc(14 * var(--u)));
+  right: clamp(24px, 4vw, 60px);
+  bottom: calc(100% + clamp(10px, 1.4vh, 16px));
   z-index: 4;
-  font-size: calc(15 * var(--u));
+  font-size: clamp(12.5px, calc(15 * var(--u)), 15px);
   font-weight: 400;
   color: var(--ink-42);
   background: transparent;
@@ -2454,32 +2481,34 @@ html.dark .swiss-grid-pattern {
 }
 
 .vela-strip-inner {
-  width: calc(1440 * var(--u));
-  margin: 0 auto;
-  padding-inline: calc(112 * var(--u)) calc(52 * var(--u));
+  width: 100%;
+  padding-inline: clamp(24px, 4vw, 60px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(36 * var(--u));
+  gap: clamp(24px, 4vw, 64px);
 }
 
 .vela-strip-lead {
   margin: 0;
-  font-size: calc(29 * var(--u));
+  flex: 0 0 auto;
+  font-size: clamp(20px, calc(28 * var(--u)), 29px);
   font-weight: 500;
-  line-height: 1.08;
+  line-height: 1.1;
   letter-spacing: -0.025em;
   color: var(--ink);
 }
 
 .vela-stats {
-  display: flex;
-  align-items: flex-start;
-  gap: calc(64 * var(--u));
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(16px, 3vw, 48px);
 }
 
 .vela-stat-val {
-  font-size: calc(54 * var(--u));
+  font-size: clamp(28px, calc(50 * var(--u)), 54px);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -2487,15 +2516,15 @@ html.dark .swiss-grid-pattern {
 }
 
 .vela-stat-lbl {
-  margin-top: calc(8 * var(--u));
-  font-size: calc(16.5 * var(--u));
+  margin-top: clamp(6px, 0.8vh, 9px);
+  font-size: clamp(13px, calc(16 * var(--u)), 16.5px);
   font-weight: 400;
   color: var(--ink-56);
 }
 
 .vela-sprout {
-  width: calc(44 * var(--u));
-  height: calc(44 * var(--u));
+  width: clamp(32px, calc(42 * var(--u)), 44px);
+  height: clamp(32px, calc(42 * var(--u)), 44px);
   flex: 0 0 auto;
   color: var(--ink);
 }
@@ -2516,14 +2545,15 @@ html.dark .swiss-grid-pattern {
   .vela-panel-inner {
     width: 100%;
     height: auto;
-    padding: 0 20px;
+    padding: 36px 20px 44px;
+    gap: 28px;
   }
 
   .vela-hero h1.vela-headline {
     position: relative;
     left: auto;
     top: auto;
-    margin-top: 40px;
+    margin-top: 0;
     font-size: clamp(38px, 11.2vw, 76px);
   }
 
@@ -2531,10 +2561,10 @@ html.dark .swiss-grid-pattern {
     position: relative;
     left: auto;
     top: auto;
-    margin-top: 40px;
+    margin-top: 0;
     flex-direction: column;
     align-items: flex-start;
-    gap: 18px;
+    gap: 22px;
   }
 
   .vela-stores {
@@ -2555,8 +2585,23 @@ html.dark .swiss-grid-pattern {
     height: 18px;
   }
 
-  .vela-caption {
+  .vela-action-stats {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .vela-action-stat {
+    padding-left: 10px;
+  }
+
+  .vela-action-stat-val {
     font-size: 15px;
+  }
+
+  .vela-action-stat-lbl {
+    font-size: 11.5px;
   }
 
   .vela-notch-wrap,
@@ -2820,13 +2865,11 @@ html.dark .swiss-grid-pattern {
    Zapline Royal Violet Trading Hero (1672x941 Design Stage)
    ========================================================================== */
 .zap-hero-root {
-  --zap-s: min(calc(100vw / 1672px), calc(100vh / 941px));
   position: relative;
   width: 100%;
-  height: 100vh;
-  height: 100svh;
-  min-height: 620px;
-  overflow: hidden;
+  min-height: 0;
+  overflow-x: clip;
+  overflow-y: clip;
   background: #000000;
   color: #f7f7f8;
   color-scheme: dark;
@@ -2845,24 +2888,21 @@ html.dark .swiss-grid-pattern {
 }
 
 .zap-stage {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 1672px;
-  height: 941px;
-  transform: translateX(-50%) scale(var(--zap-s, 1));
-  transform-origin: top center;
+  position: relative;
+  width: 100%;
   z-index: 2;
   overflow: visible;
 }
 
-/* Top Planet Rim Layer (1672x717 design px) */
+/* Top Planet Rim Layer */
 .zap-planet-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 1672px;
-  height: 717px;
+  top: clamp(-90px, -5.5vw, -32px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1672px;
+  height: clamp(250px, 34vw, 500px);
   pointer-events: none;
   mix-blend-mode: screen;
   z-index: 1;
@@ -2887,28 +2927,27 @@ html.dark .swiss-grid-pattern {
   opacity: 0;
   transition: opacity 0.8s ease;
   mix-blend-mode: screen;
-  filter: hue-rotate(-56deg) saturate(1.12);
+  filter: hue-rotate(-56deg) saturate(1.08) brightness(0.82);
 }
 
 .zap-planet-video.is-ready {
-  opacity: 1;
+  opacity: 0.78;
 }
 
 .zap-planet-vignette {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 62%, #000000 100%),
-    linear-gradient(90deg, #000000 0%, transparent 10%, transparent 90%, #000000 100%),
-    radial-gradient(ellipse 85% 90% at 50% 10%, transparent 55%, rgba(0, 0, 0, 0.82) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.78) 74%, #000000 100%),
+    linear-gradient(90deg, #000000 0%, transparent 12%, transparent 88%, #000000 100%),
+    radial-gradient(ellipse 85% 90% at 50% 10%, transparent 50%, rgba(0, 0, 0, 0.86) 100%);
 }
 
 /* Navigation */
 .zap-nav {
-  position: absolute;
-  top: 28px;
-  left: 234px;
-  width: 1204px;
+  position: relative;
+  width: 100%;
+  max-width: 1204px;
   height: 48px;
   display: flex;
   align-items: center;
@@ -3053,11 +3092,10 @@ html.dark .swiss-grid-pattern {
 
 /* Centered Hero Copy */
 .zap-copy {
-  position: absolute;
-  top: 248px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1120px;
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3068,11 +3106,12 @@ html.dark .swiss-grid-pattern {
 .zap-headline {
   margin: 0;
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
-  font-size: 80px;
+  font-size: clamp(2.35rem, 5vw, 4.75rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.06;
   letter-spacing: -0.036em;
   color: #f7f7f8;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.72);
 }
 
 .zap-headline-line {
@@ -3080,51 +3119,53 @@ html.dark .swiss-grid-pattern {
 }
 
 .zap-brand-grad {
-  background: linear-gradient(110deg, #dbeafe 0%, #60a5fa 45%, #2563eb 100%);
+  background: linear-gradient(110deg, #e0f2fe 0%, #93c5fd 48%, #3b82f6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.72));
 }
 
 .zap-lede {
-  margin: 20px 0 0;
-  max-width: 680px;
-  font-size: 18px;
+  margin: 18px 0 0;
+  max-width: 660px;
+  font-size: clamp(0.95rem, 1.2vw, 1.125rem);
   font-weight: 400;
   line-height: 1.56;
-  color: #a1a1aa;
+  color: #cbd5e1;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.85);
 }
 
 .zap-actions {
-  margin-top: 28px;
+  margin-top: 26px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .zap-hero-btn {
-  padding: 13px 28px;
-  font-size: 15px;
+  min-height: 44px;
+  padding: 12px 26px;
+  font-size: 14.5px;
 }
 
-/* Bottom Dashboard Panel (1204px wide, starts y = 651) */
+/* Dashboard Panel inside ContainerScroll Card */
 .zap-dashboard-wrap {
-  position: absolute;
-  top: 651px;
-  left: 234px;
-  width: 1204px;
-  height: 760px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   z-index: 5;
 }
 
 .zap-dashboard-glow {
   position: absolute;
-  top: -72px;
+  top: -54px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1204px;
-  height: 110px;
+  width: min(100%, 1160px);
+  height: 84px;
   object-fit: cover;
   mix-blend-mode: screen;
   filter: hue-rotate(-56deg) saturate(1.12);
@@ -3136,13 +3177,8 @@ html.dark .swiss-grid-pattern {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 14px 14px 0 0;
+  border-radius: inherit;
   background: linear-gradient(180deg, rgba(11, 16, 28, 0.94) 0%, rgba(7, 10, 16, 0.98) 100%);
-  border: 1px solid rgba(37, 99, 235, 0.38);
-  border-bottom: none;
-  box-shadow:
-    0 -14px 60px rgba(37, 99, 235, 0.24),
-    inset 0 1px 0 rgba(147, 197, 253, 0.35);
   backdrop-filter: blur(18px);
   display: flex;
   overflow: hidden;
@@ -3201,8 +3237,7 @@ html.dark .swiss-grid-pattern {
   border-radius: 6px;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
-  color: #fff;
+  background: transparent;
 }
 
 .zap-muted-icon {
@@ -3294,7 +3329,7 @@ html.dark .swiss-grid-pattern {
 .zap-dash-main {
   flex: 1;
   min-width: 0;
-  padding: 18px 22px 24px;
+  padding: 18px 22px 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -3617,137 +3652,34 @@ html.dark .swiss-grid-pattern {
 }
 
 /* ==========================================================================
-   Mobile Stacked Layout (< 900px or Portrait)
+   Compact Stacked Layout (< 1024px)
    ========================================================================== */
-@media (max-width: 899px), (orientation: portrait) {
-  .zap-hero-root {
-    height: auto;
-    min-height: 100svh;
-    padding-bottom: 36px;
-  }
-
-  .zap-stage {
-    position: relative;
-    left: auto;
-    top: auto;
-    width: 100%;
-    height: auto;
-    transform: none;
-  }
-
+@media (max-width: 1023px) {
   .zap-planet-layer {
-    width: 100%;
-    height: 290px;
+    height: 300px;
   }
 
   .zap-planet-video {
     display: none;
   }
 
-  .zap-nav {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    height: auto;
-    padding: 18px 18px 0;
-  }
-
-  .zap-nav-menu,
-  .zap-nav-cta {
-    display: none;
-  }
-
-  .zap-mobile-menu-btn {
-    display: inline-flex;
-  }
-
-  .zap-mobile-drawer {
-    position: relative;
-    z-index: 20;
-    margin: 12px 18px 0;
-    padding: 14px;
-    border-radius: 14px;
-    background: rgba(11, 16, 28, 0.96);
-    border: 1px solid rgba(59, 130, 246, 0.35);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .zap-mobile-link {
-    padding: 10px 12px;
-    border-radius: 8px;
-    color: #8b8988;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-  }
-
-  .zap-mobile-link.is-active {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f7f7f8;
-  }
-
-  .zap-mobile-drawer-cta {
-    margin-top: 6px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .zap-copy {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: 100%;
-    padding: 124px 20px 36px;
-  }
-
-  .zap-headline {
-    font-size: clamp(2.3rem, 10.2vw, 3.3rem);
-    line-height: 1.07;
-  }
-
   .zap-smarter {
     display: block;
-  }
-
-  .zap-lede {
-    font-size: 15px;
-    margin-top: 16px;
   }
 
   .zap-lede-br {
     display: none;
   }
 
-  .zap-actions {
-    margin-top: 24px;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .zap-dashboard-wrap {
-    position: relative;
-    top: auto;
-    left: auto;
-    width: 100%;
-    height: auto;
-    padding: 18px 16px 0;
-  }
-
   .zap-dashboard-glow {
-    top: -26px;
+    top: -32px;
     width: 100%;
     height: 60px;
   }
 
   .zap-dashboard-panel {
-    border-radius: 14px;
-    border-bottom: 1px solid rgba(37, 99, 235, 0.38);
     flex-direction: column;
-    height: auto;
+    height: 100%;
   }
 
   .zap-sidebar {
@@ -3755,15 +3687,15 @@ html.dark .swiss-grid-pattern {
     flex: none;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 14px;
+    padding: 12px 14px;
   }
 
   .zap-sidebar-group {
     flex-direction: row;
-    flex-wrap: wrap;
-    overflow-x: visible;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
     gap: 6px;
-    padding-bottom: 2px;
+    padding-bottom: 0;
   }
 
   .zap-sidebar-item {
@@ -3774,12 +3706,13 @@ html.dark .swiss-grid-pattern {
   }
 
   .zap-sidebar-divider,
+  .zap-sidebar-divider + .zap-sidebar-group,
   .zap-promo-card {
     display: none;
   }
 
   .zap-dash-main {
-    padding: 16px;
+    padding: 14px 14px 0;
   }
 
   .zap-dash-topbar {

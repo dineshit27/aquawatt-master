@@ -322,11 +322,20 @@ export const VelaHeroSection: React.FC<{ onScrollLearnMore?: () => void }> = ({
                 </button>
               </div>
 
-              <p className="vela-caption">
-                Direct engineering notes for ESP32 flow &amp; INA219
-                <br />
-                wiring, MQTT setup, and anomaly threshold support.
-              </p>
+              <div className="vela-action-stats" aria-label="Hardware support specifications">
+                <div className="vela-action-stat">
+                  <span className="vela-action-stat-val">GPIO34</span>
+                  <span className="vela-action-stat-lbl">FS-S401 pulse input</span>
+                </div>
+                <div className="vela-action-stat">
+                  <span className="vela-action-stat-val">16×2 LCD</span>
+                  <span className="vela-action-stat-lbl">Local bench readout</span>
+                </div>
+                <div className="vela-action-stat">
+                  <span className="vela-action-stat-val">5 Guides</span>
+                  <span className="vela-action-stat-lbl">Diagnostic FAQ topics</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

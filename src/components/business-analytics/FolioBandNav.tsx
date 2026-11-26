@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { BrandLogo } from '../common/BrandLogo';
 
 export interface SectionDescriptor {
   id: string;
@@ -53,7 +54,8 @@ export const FolioBandNav: React.FC<FolioBandNavProps> = ({
           <span className="hidden sm:inline">Console</span>
         </Link>
 
-        <div className="band-id hidden sm:inline-flex">
+        <div className="band-id hidden sm:inline-flex items-center gap-2">
+          <BrandLogo size="xs" decorative className="!w-5 !h-5 !p-[1px] !rounded-[5px]" />
           <span className="band-name">AquaWatt</span>
           <span className="band-year">ANALYTICS 2026</span>
         </div>

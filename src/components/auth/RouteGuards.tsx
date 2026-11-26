@@ -6,6 +6,7 @@ import {
   evaluateProtectedRoute,
   evaluatePublicOnlyRoute,
 } from '../../utils/authRouteGuard';
+import { BrandLogo } from '../common/BrandLogo';
 
 export const SessionVerificationLoader: React.FC = () => (
   <div
@@ -14,8 +15,8 @@ export const SessionVerificationLoader: React.FC = () => (
     aria-live="polite"
   >
     <div className="flex flex-col items-center gap-3 text-xs font-mono">
-      <div className="flex items-center gap-2.5">
-        <span className="w-2.5 h-2.5 rounded-full bg-[#174A8B] animate-pulse" />
+      <BrandLogo size="md" decorative className="animate-pulse" />
+      <div className="flex items-center gap-2">
         <span>Verifying AquaWatt session...</span>
       </div>
     </div>

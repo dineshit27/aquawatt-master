@@ -125,3 +125,103 @@ export function normalizeAuthErrorMessage(error: unknown): string {
   }
   return raw;
 }
+
+export type PasswordStrengthLevel = 'empty' | 'weak' | 'fair' | 'good' | 'strong';
+
+export interface PasswordStrengthCriterion {
+  id: 'length' | 'case' | 'number' | 'symbol';
+  label: string;
+  met: boolean;
+}
+
+export interface PasswordStrengthResult {
+  level: PasswordStrengthLevel;
+  label: string;
+  score: 0 | 1 | 2 | 3 | 4;
+  percent: 0 | 25 | 50 | 75 | 100;
+  criteriaMetCount: number;
+  criteria: PasswordStrengthCriterion[];
+}
+
+export function evaluatePasswordStrength(password: string): PasswordStrengthResult {
+  const hasMin8 = password.length >= 8;
+  const hasLower = /[a-z]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasMixedCase = hasLower && hasUpper;
+  const hasNumber = /\d/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+
+  const criteria: PasswordStrengthCriterion[] = [
+    { id: 'length', label: '8+ characters', met: hasMin8 },
+    { id: 'case', label: 'Upper & lowercase', met: hasMixedCase },
+    { id: 'number', label: 'Number (0–9)', met: hasNumber },
+    { id: 'symbol', label: 'Symbol (!@#)', met: hasSymbol },
+  ];
+
+  const criteriaMetCount = criteria.filter(c => c.met).length;
+
+  if (password.length === 0) {
+    return {
+      level: 'empty',
+      label: 'Enter a password',
+      score: 0,
+      percent: 0,
+      criteriaMetCount: 0,
+      criteria,
+    };
+  }
+
+  if (password.length < 6) {
+    return {
+      level: 'weak',
+      label: 'Too short',
+      score: 1,
+      percent: 25,
+      criteriaMetCount,
+      criteria,
+    };
+  }
+
+  if (criteriaMetCount <= 1 || (!hasMin8 && criteriaMetCount <= 2)) {
+    return {
+      level: 'weak',
+      label: 'Weak',
+      score: 1,
+      percent: 25,
+      criteriaMetCount,
+      criteria,
+    };
+  }
+
+  if (criteriaMetCount === 2) {
+    return {
+      level: 'fair',
+      label: 'Fair',
+      score: 2,
+      percent: 50,
+      criteriaMetCount,
+      criteria,
+    };
+  }
+
+  if (criteriaMetCount === 3) {
+    return {
+      level: 'good',
+      label: 'Good',
+      score: 3,
+      percent: 75,
+      criteriaMetCount,
+      criteria,
+    };
+  }
+
+  return {
+    level: 'strong',
+    label: 'Strong',
+    score: 4,
+    percent: 100,
+    criteriaMetCount,
+    criteria,
+  };
+}
+

@@ -85,3 +85,74 @@ export function getPlanComparisonRows(): PlanComparisonRow[] {
     },
   ];
 }
+
+export type SubscriptionFaqCategoryKey = 'plans' | 'hardware' | 'security';
+
+export interface SubscriptionFaqEntry {
+  question: string;
+  answer: string;
+}
+
+export const SUBSCRIPTION_FAQ_CATEGORIES: Record<SubscriptionFaqCategoryKey, string> = {
+  plans: 'Plans & Billing',
+  hardware: 'Hardware & Sensors',
+  security: 'Data & Security',
+};
+
+export const SUBSCRIPTION_FAQ_DATA: Record<
+  SubscriptionFaqCategoryKey,
+  SubscriptionFaqEntry[]
+> = {
+  plans: [
+    {
+      question: 'What is included across Starter Explorer, Standard Pro, and Enterprise Eco?',
+      answer:
+        'Starter Explorer supports up to 2 sensor nodes with 7-day history for single-bench evaluation. Standard Pro scales to 12 ESP32 nodes, 365-day retention, and CSV digests, while Enterprise Eco adds unlimited node capacity, multi-site hierarchy, and JSON audit exports.',
+    },
+    {
+      question: 'Does switching plans here charge a real payment method?',
+      answer:
+        'No. Plan switching in this console operates in demonstration mode so facility teams can preview tier limits and INR ₹ tariff views without processing live credit card or UPI payments.',
+    },
+    {
+      question: 'How does the Monthly vs. Yearly billing toggle work?',
+      answer:
+        'Selecting Yearly Billing displays the 20% annual discount equivalent (₹399/mo for Standard Pro and ₹1,199/mo for Enterprise Eco, billed annually), while Monthly Billing shows standard month-to-month rates.',
+    },
+  ],
+  hardware: [
+    {
+      question: 'What hardware architecture does AquaWatt support?',
+      answer:
+        'AquaWatt targets ESP32 microcontrollers paired with an operational FS-S401 Hall-effect pulse water flow sensor (GPIO34) and a local 16×2 character LCD display. An INA219 DC power module is modeled in the hardware design with physical calibration pending.',
+    },
+    {
+      question: 'Are the valve shutoff controls on the dashboard physically connected?',
+      answer:
+        'No. Valve trips, relay toggles, and load-shift controls in the web console are interactive software simulations that demonstrate automated isolation logic without actuating physical valves.',
+    },
+    {
+      question: 'How are bench readings transferred from the ESP32?',
+      answer:
+        'Bench instrumentation outputs flow diagnostics over Serial at 115200 baud and on the local 16×2 LCD. Wi-Fi MQTT-to-Supabase ingestion schemas and services are implemented while end-to-end live hardware pipeline verification remains pending.',
+    },
+  ],
+  security: [
+    {
+      question: 'How are simulated demo baselines separated from physical Supabase data?',
+      answer:
+        'Demo Mode runs synthetic residential and lab consumption profiles locally, whereas Physical Mode queries authenticated Supabase PostgreSQL tables via Row Level Security and preserves null values for uncalibrated INA219 channels.',
+    },
+    {
+      question: 'How is multi-user facility data isolated?',
+      answer:
+        'All authenticated API routes, MCP tools, and Supabase queries verify the caller’s Supabase JWT and enforce user ownership via PostgreSQL Row Level Security (RLS), preventing cross-tenant access.',
+    },
+    {
+      question: 'Can I export consumption and ledger records for audits?',
+      answer:
+        'Yes. Export actions generate structured .CSV and .JSON files containing timestamped flow readings, INR ₹ cost calculations, and event ledger entries.',
+    },
+  ],
+};
+

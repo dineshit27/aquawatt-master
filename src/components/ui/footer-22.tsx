@@ -18,6 +18,7 @@ export interface OfferColumn {
 
 export interface Footer22Props {
   brandName?: string;
+  brandLogo?: React.ReactNode;
   offerColumns?: OfferColumn[];
   newsletterHeadline?: string;
   newsletterDescription?: string;
@@ -59,6 +60,7 @@ const gridItem: Variants = {
 
 export default function Footer22({
   brandName = 'WATERMELON',
+  brandLogo,
   offerColumns = [
     {
       title: 'OFFER',
@@ -251,9 +253,12 @@ export default function Footer22({
           className="pt-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-12"
         >
           <div className="flex flex-col gap-4">
-            <span className="text-neutral-500 dark:text-neutral-400 text-lg md:text-xl font-normal">
-              Reach out at:
-            </span>
+            <div className="flex items-center gap-3">
+              {brandLogo}
+              <span className="text-neutral-500 dark:text-neutral-400 text-lg md:text-xl font-normal">
+                Reach out at:
+              </span>
+            </div>
             <a
               href={`mailto:${emailContact}`}
               className="text-2xl md:text-4xl lg:text-[40px] font-light text-neutral-800 dark:text-neutral-200 hover:text-black dark:hover:text-white flex items-center gap-3 group transition-colors"

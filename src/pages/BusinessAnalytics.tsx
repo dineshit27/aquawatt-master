@@ -23,6 +23,7 @@ import { PatternHeatmap } from '../components/business-analytics/PatternHeatmap'
 import { DistributionWaffleAndBars } from '../components/business-analytics/DistributionWaffleAndBars';
 import { ScatterRegressionChart } from '../components/business-analytics/ScatterRegressionChart';
 import { BusinessDataExplorer } from '../components/business-analytics/BusinessDataExplorer';
+import { RollingFacilityAccountSection } from '../components/business-analytics/RollingFacilityAccountSection';
 import '../styles/business-analytics-folio.css';
 
 const SECTIONS: ReadonlyArray<SectionDescriptor> = [
@@ -35,6 +36,7 @@ const SECTIONS: ReadonlyArray<SectionDescriptor> = [
   { id: 's07', num: '07', title: 'Resource Distribution' },
   { id: 's08', num: '08', title: 'Usage Relationship Analysis' },
   { id: 's09', num: '09', title: 'Business Data Explorer' },
+  { id: 's10', num: '10', title: 'Rolling Facility Account' },
 ];
 
 interface TooltipState {
@@ -199,8 +201,8 @@ export const BusinessAnalytics: React.FC = () => {
       } else if (e.key.toLowerCase() === 'g') {
         e.preventDefault();
         toggleGridOverlay();
-      } else if (/^[1-9]$/.test(e.key)) {
-        const idx = Number(e.key) - 1;
+      } else if (/^[0-9]$/.test(e.key)) {
+        const idx = e.key === '0' ? 9 : Number(e.key) - 1;
         if (idx >= 0 && idx < SECTIONS.length) {
           e.preventDefault();
           jumpToSection(idx);
@@ -273,7 +275,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s01" className="spread" data-spine="true" aria-labelledby="s01-heading">
           <div className="folio-line">
             <span>AQUAWATT // BUSINESS ANALYTICS EDITION</span>
-            <span>SECTION 01 / 09 · OVERVIEW</span>
+            <span>SECTION 01 / 10 · OVERVIEW</span>
           </div>
 
           <div className="grid-12">
@@ -397,7 +399,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s02" className="spread" data-spine="true" aria-labelledby="s02-heading">
           <div className="folio-line">
             <span>PERIOD-OVER-PERIOD HYDRAULIC VARIANCE</span>
-            <span>SECTION 02 / 09 · COMPARISON</span>
+            <span>SECTION 02 / 10 · COMPARISON</span>
           </div>
 
           <div className="grid-12">
@@ -461,7 +463,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s03" className="spread" data-spine="true" aria-labelledby="s03-heading">
           <div className="folio-line">
             <span>ZONE ALLOCATION & ROTATED DEMAND RANKING</span>
-            <span>SECTION 03 / 09 · BREAKDOWN</span>
+            <span>SECTION 03 / 10 · BREAKDOWN</span>
           </div>
 
           <div className="grid-12">
@@ -580,7 +582,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s04" className="spread" aria-labelledby="s04-heading">
           <div className="folio-line">
             <span>HYDROLOGY TRENDLINE & SYSTEM MILESTONES</span>
-            <span>SECTION 04 / 09 · TRENDS</span>
+            <span>SECTION 04 / 10 · TRENDS</span>
           </div>
 
           <div className="grid-12">
@@ -632,7 +634,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s05" className="spread" aria-labelledby="s05-heading">
           <div className="folio-line">
             <span>MULTI-QUARTER LOAD COMPOSITION</span>
-            <span>SECTION 05 / 09 · HISTORICAL</span>
+            <span>SECTION 05 / 10 · HISTORICAL</span>
           </div>
 
           <div className="space-y-6">
@@ -664,7 +666,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s06" className="spread" aria-labelledby="s06-heading">
           <div className="folio-line">
             <span>DIURNAL & ZONE INTENSITY MATRIX</span>
-            <span>SECTION 06 / 09 · HEATMAP</span>
+            <span>SECTION 06 / 10 · HEATMAP</span>
           </div>
 
           <div className="space-y-5">
@@ -708,7 +710,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s07" className="spread" aria-labelledby="s07-heading">
           <div className="folio-line">
             <span>VERIFICATION LATTICE & CORRIDOR VARIANCE</span>
-            <span>SECTION 07 / 09 · DISTRIBUTION</span>
+            <span>SECTION 07 / 10 · DISTRIBUTION</span>
           </div>
 
           <div className="space-y-5">
@@ -748,7 +750,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s08" className="spread" aria-labelledby="s08-heading">
           <div className="folio-line">
             <span>ORDINARY LEAST SQUARES REGRESSION</span>
-            <span>SECTION 08 / 09 · CORRELATION</span>
+            <span>SECTION 08 / 10 · CORRELATION</span>
           </div>
 
           <div className="space-y-5">
@@ -791,7 +793,7 @@ export const BusinessAnalytics: React.FC = () => {
         <section id="s09" className="spread" aria-labelledby="s09-heading">
           <div className="folio-line">
             <span>CONSERVATION SCENARIOS & FILTERABLE LEDGER</span>
-            <span>SECTION 09 / 09 · EXPLORER</span>
+            <span>SECTION 09 / 10 · EXPLORER</span>
           </div>
 
           <div className="grid-12">
@@ -838,6 +840,17 @@ export const BusinessAnalytics: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* ================================================================
+            10 · ROLLING FACILITY ACCOUNT
+           ================================================================ */}
+        <RollingFacilityAccountSection
+          sourceMode={sourceMode}
+          physicalSnapshot={physicalSnapshot}
+          isLoadingPhysical={isLoadingPhysical}
+          onRefreshPhysical={loadPhysical}
+          onSwitchToHybrid={() => handleSourceModeChange('hybrid')}
+        />
       </main>
 
       {/* Shared Accessible Floating Hover/Focus Tooltip */}

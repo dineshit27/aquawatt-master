@@ -1,5 +1,6 @@
 import React from 'react';
 import Footer22, { Footer22Props, OfferColumn, LinkItem } from '../ui/footer-22';
+import { BrandLogo } from '../common/BrandLogo';
 
 const defaultOfferColumns: OfferColumn[] = [
   {
@@ -54,6 +55,7 @@ const defaultBottomLinks: LinkItem[] = [
 
 export const Footer: React.FC<Partial<Footer22Props>> = ({
   brandName = 'AQUAWATT',
+  brandLogo = <BrandLogo size="md" />,
   offerColumns = defaultOfferColumns,
   newsletterHeadline = 'Subscribe for Telemetry Updates',
   newsletterDescription = 'Get the latest IoT firmware releases, energy conservation insights, and sensor integration guides.',
@@ -66,6 +68,7 @@ export const Footer: React.FC<Partial<Footer22Props>> = ({
   return (
     <Footer22
       brandName={brandName}
+      brandLogo={brandLogo}
       offerColumns={offerColumns}
       newsletterHeadline={newsletterHeadline}
       newsletterDescription={newsletterDescription}

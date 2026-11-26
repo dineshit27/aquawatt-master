@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useApp } from '../../context/AppContext';
-import { Menu, X, ArrowUpRight, Droplet, Zap } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { AnimatedThemeToggler } from '../ui/animated-theme-toggler';
+import { BrandLogo } from '../common/BrandLogo';
 
 interface MarketingNavbarProps {
   showOnlyWhenScrolled?: boolean;
@@ -79,10 +80,11 @@ export const MarketingNavbar: React.FC<MarketingNavbarProps> = ({
       <div className="max-w-[1380px] mx-auto px-3 sm:px-5 lg:px-8 h-18 flex items-center justify-between gap-2">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2 lg:gap-2.5 group shrink-0">
-          <div className="relative w-8 h-8 rounded-lg bg-[#174A8B] dark:bg-sky-600 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform">
-            <Droplet className="w-4 h-4 fill-white/80" />
-            <Zap className="w-2.5 h-2.5 absolute top-1 right-1 text-emerald-300 fill-emerald-300" />
-          </div>
+          <BrandLogo
+            size="sm"
+            decorative
+            className="group-hover:scale-105 transition-transform"
+          />
           <span
             className={`font-heading font-bold text-lg tracking-tight whitespace-nowrap ${
               overDarkHero ? 'text-white' : 'text-slate-900 dark:text-white'

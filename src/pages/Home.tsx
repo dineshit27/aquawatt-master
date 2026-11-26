@@ -249,7 +249,7 @@ export const Home: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F9FB] dark:bg-[#070B13] text-[#17263F] dark:text-[#E2E8F0] selection:bg-[#174A8B] selection:text-white transition-colors overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-[#F7F9FB] dark:bg-[#070B13] text-[#17263F] dark:text-[#E2E8F0] selection:bg-[#174A8B] selection:text-white transition-colors overflow-x-clip font-sans">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[120] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-[#174A8B] focus:text-white focus:text-xs focus:font-semibold focus:shadow-lg"
