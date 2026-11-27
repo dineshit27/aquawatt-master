@@ -21,8 +21,11 @@ import FluxPay from '../components/ui/fluxpay.js';
 import { ContainerScroll } from '../components/ui/container-scroll-animation.js';
 import { BrandLogo, AQUAWATT_LOGO_SRC } from '../components/common/BrandLogo.js';
 import { Footer } from '../components/navigation/Footer.js';
+import ContactWithGlobe from '../components/ui/contact-with-globe.js';
+import ScrollFAQAccordion from '../components/ui/scroll-faqaccordion.js';
+import { HomeSectionBadge } from '../components/home/HomeSectionBadge.js';
 import { MemoryRouter } from 'react-router-dom';
-import { SUBSCRIPTION_PLANS } from '../data/mockData.js';
+import { FAQ_ITEMS, SUBSCRIPTION_PLANS } from '../data/mockData.js';
 
 describe('Support Service & Subscription Helpers', () => {
   it('validates contact inquiry form fields accurately', () => {
@@ -220,5 +223,50 @@ describe('Support Service & Subscription Helpers', () => {
     assert.ok(!html.includes('Municipal Partnerships'));
     assert.ok(!html.includes('Telemetry Security Specs'));
     assert.ok(!html.includes('Security &amp; Telemetry Docs'));
+  });
+
+  it('renders ContactWithGlobe cleanly via SSR with wireframe globe SVG and form controls', () => {
+    const html = renderToString(React.createElement(ContactWithGlobe, null));
+
+    assert.ok(html.includes('Send an Inquiry or Incident Report'));
+    assert.ok(html.includes('mailto:aquawatt.sol@gmail.com'));
+    assert.ok(html.includes('Interactive 3D wireframe globe'));
+    assert.ok(html.includes('Full Name *'));
+    assert.ok(html.includes('Work Email *'));
+    assert.ok(html.includes('Submit'));
+  });
+
+  it('renders ScrollFAQAccordion cleanly via SSR with AquaWatt diagnostic FAQ items', () => {
+    const data = FAQ_ITEMS.map((item, idx) => ({
+      id: idx + 1,
+      question: item.question,
+      answer: item.answer,
+    }));
+    const html = renderToString(
+      React.createElement(ScrollFAQAccordion, {
+        data,
+        title: 'Knowledge Base & Diagnostics',
+        subtitle: 'ESP32 hardware notes and telemetry guides.',
+      })
+    );
+
+    assert.ok(html.includes('Knowledge Base &amp; Diagnostics'));
+    assert.ok(html.includes('What hardware architecture does AquaWatt use?'));
+    assert.ok(html.includes('FS-S401 Hall-effect pulse water flow sensor'));
+    assert.ok(!html.includes('Ruixen UI'));
+  });
+
+  it('renders HomeSectionBadge with divided icon slot and rose-to-indigo gradient text', () => {
+    const html = renderToString(
+      React.createElement(HomeSectionBadge, { icon: '💧', children: 'Impact Ledger' })
+    );
+
+    assert.ok(html.includes('divide-x'));
+    assert.ok(html.includes('from-rose-500'));
+    assert.ok(html.includes('to-indigo-500'));
+    assert.ok(html.includes('bg-clip-text'));
+    assert.ok(html.includes('text-transparent'));
+    assert.ok(html.includes('💧'));
+    assert.ok(html.includes('Impact Ledger'));
   });
 });

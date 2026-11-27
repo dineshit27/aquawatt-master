@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { LandingLeadingPill } from '../landing/leading/LandingLeadingPill';
+import { HomeSectionBadge } from './HomeSectionBadge';
 
 interface FaqItem {
   question: string;
@@ -51,13 +51,9 @@ export const FaqSection: React.FC = () => {
     >
       <div className="max-w-[1380px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-20 max-[900px]:py-[60px]">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <LandingLeadingPill
-            borderVariant="primary"
-            textVariant="primary"
-            className="mb-3"
-          >
+          <HomeSectionBadge icon="❓" className="mb-3">
             FAQ
-          </LandingLeadingPill>
+          </HomeSectionBadge>
           <h2
             id="faq-section-heading"
             className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight"

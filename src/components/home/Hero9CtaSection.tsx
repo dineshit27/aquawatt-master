@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, type Variants } from 'motion/react';
 import { FaArrowRight } from 'react-icons/fa6';
-import { Cpu, Droplets, Zap } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { HomeSectionBadge } from './HomeSectionBadge';
 
 export interface Hero9Avatar {
   src: string;
@@ -105,22 +105,10 @@ export const Hero9CtaSection: React.FC<Hero9CtaProps> = ({
           viewport={{ once: true, amount: 0.35 }}
           className="mx-auto flex w-full max-w-[760px] flex-col items-center text-center"
         >
-          <motion.div
-            variants={contentItem}
-            className="inline-flex min-h-7 items-center gap-2 rounded-full bg-white/30 px-1.5 pr-4 py-1 text-xs leading-none font-semibold text-slate-800 shadow-[0_1px_1px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-md"
-          >
-            <span className="flex -space-x-1.5">
-              <span className="grid size-5 place-items-center rounded-full bg-sky-600 text-white shadow-xs ring-1 ring-white/80">
-                <Droplets className="size-3" />
-              </span>
-              <span className="grid size-5 place-items-center rounded-full bg-amber-500 text-white shadow-xs ring-1 ring-white/80">
-                <Zap className="size-3" />
-              </span>
-              <span className="grid size-5 place-items-center rounded-full bg-[#174A8B] text-white shadow-xs ring-1 ring-white/80">
-                <Cpu className="size-3" />
-              </span>
-            </span>
-            <span>{eyebrowText}</span>
+          <motion.div variants={contentItem}>
+            <HomeSectionBadge icon="🚀" surface="glass">
+              {eyebrowText}
+            </HomeSectionBadge>
           </motion.div>
 
           <motion.h2

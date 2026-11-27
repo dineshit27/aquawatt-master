@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { LandingLeadingPill } from '../landing/leading/LandingLeadingPill';
+import { HomeSectionBadge } from './HomeSectionBadge';
 
 export const ConservationLedgerSection: React.FC = () => {
   return (
@@ -12,13 +12,9 @@ export const ConservationLedgerSection: React.FC = () => {
       <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-10 mb-10">
           <div className="max-w-xl">
-            <LandingLeadingPill
-              borderVariant="primary"
-              textVariant="primary"
-              className="mb-3"
-            >
+            <HomeSectionBadge icon="💧" className="mb-3">
               Impact Ledger
-            </LandingLeadingPill>
+            </HomeSectionBadge>
             <h2
               id="conservation-ledger-heading"
               className="font-heading font-bold text-3xl sm:text-4xl lg:text-[2.7rem] leading-tight tracking-tight text-slate-900 dark:text-white text-balance"

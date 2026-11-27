@@ -32,7 +32,7 @@ import { FaqSection } from '../components/home/FaqSection';
 import { Hero9CtaSection } from '../components/home/Hero9CtaSection';
 import { VisualTelemetrySection } from '../components/home/VisualTelemetrySection';
 import { ZaplineHeroSection } from '../components/home/ZaplineHeroSection';
-import { LandingLeadingPill } from '../components/landing/leading/LandingLeadingPill';
+import { HomeSectionBadge } from '../components/home/HomeSectionBadge';
 import sensorImg from '../assets/images/iot_ultrasonic_flow_sensor_1793896013850.jpg';
 
 export const Home: React.FC = () => {
@@ -244,13 +244,9 @@ export const Home: React.FC = () => {
       {/* SECTION 4: ASYMMETRIC BENTO GRID — PLATFORM ARCHITECTURE */}
       <section id="bento-grid" className="py-24 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-16">
-          <LandingLeadingPill
-            borderVariant="primary"
-            textVariant="primary"
-            className="mb-3"
-          >
+          <HomeSectionBadge icon="🔧" className="mb-3">
             System Stack
-          </LandingLeadingPill>
+          </HomeSectionBadge>
           <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mt-1 text-balance">
             Modular Hardware & Cloud Intelligence
           </h2>
@@ -437,13 +433,9 @@ export const Home: React.FC = () => {
         <div className="mt-10 rounded-2xl bg-white dark:bg-[#0E1626] border border-slate-200/90 dark:border-slate-800/90 shadow-xs p-6 sm:p-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800/80">
             <div>
-              <LandingLeadingPill
-                borderVariant="primary"
-                textVariant="primary"
-                className="mb-2"
-              >
+              <HomeSectionBadge icon="📡" className="mb-2">
                 Signal Pipeline
-              </LandingLeadingPill>
+              </HomeSectionBadge>
               <h3 className="text-xl sm:text-2xl font-bold font-heading text-slate-900 dark:text-white mt-1">
                 Hardware-to-Cloud Telemetry Circuit Workflow
               </h3>
@@ -535,13 +527,9 @@ export const Home: React.FC = () => {
           {/* Left 6 Cols: Community Challenge Preview */}
           <div className="lg:col-span-6 space-y-6">
             <div>
-              <LandingLeadingPill
-                borderVariant="primary"
-                textVariant="primary"
-                className="mb-2"
-              >
+              <HomeSectionBadge icon="🏆" className="mb-2">
                 Saving Sprints
-              </LandingLeadingPill>
+              </HomeSectionBadge>
               <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
                 Collaborative Saving Sprints
               </h2>
@@ -610,13 +598,9 @@ export const Home: React.FC = () => {
           {/* Right 6 Cols: Engineering Validation Notes */}
           <div className="lg:col-span-6 space-y-5">
             <div>
-              <LandingLeadingPill
-                borderVariant="emerald"
-                textVariant="emerald"
-                className="mb-2"
-              >
+              <HomeSectionBadge icon="🧪" className="mb-2">
                 Architecture Notes
-              </LandingLeadingPill>
+              </HomeSectionBadge>
               <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
                 Testbench Engineering Notes
               </h2>
@@ -650,13 +634,9 @@ export const Home: React.FC = () => {
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center max-w-xl mx-auto mb-12">
-            <LandingLeadingPill
-              borderVariant="primary"
-              textVariant="primary"
-              className="mb-3"
-            >
+            <HomeSectionBadge icon="💳" className="mb-3">
               Plans &amp; Tiers
-            </LandingLeadingPill>
+            </HomeSectionBadge>
             <h2 className="text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
               Engineered Telemetry Subscriptions
             </h2>
@@ -683,13 +663,9 @@ export const Home: React.FC = () => {
       {/* SECTION 10: TECHNOLOGY ECOSYSTEM */}
       <section className="py-20 border-t border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#070B13] transition-colors">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 mb-4 text-center">
-          <LandingLeadingPill
-            borderVariant="primary"
-            textVariant="primary"
-            className="mb-3"
-          >
+          <HomeSectionBadge icon="🧩" className="mb-3">
             Tech Stack
-          </LandingLeadingPill>
+          </HomeSectionBadge>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
             Built With Technologies That Power AquaWatt
           </h2>

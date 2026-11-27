@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
-import { LandingLeadingPill } from '../landing/leading/LandingLeadingPill';
+import { HomeSectionBadge } from './HomeSectionBadge';
 
 interface InsightDay {
   day: string;
@@ -239,9 +239,9 @@ export const FeatureMosaicSection: React.FC = () => {
     >
       <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 mb-7 sm:mb-9 text-center">
         <div className="mb-3 flex justify-center">
-          <LandingLeadingPill borderVariant="primary" textVariant="primary">
+          <HomeSectionBadge icon="⚡">
             Edge Automation
-          </LandingLeadingPill>
+          </HomeSectionBadge>
         </div>
         <h2
           id="feature-mosaic-heading"

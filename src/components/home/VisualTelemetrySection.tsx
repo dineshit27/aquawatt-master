@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { DuneAreaChart, type DuneSeries, fmtDay } from '../ui/dune-flow';
-import { LandingLeadingPill } from '../landing/leading/LandingLeadingPill';
+import { HomeSectionBadge } from './HomeSectionBadge';
 import { useTheme } from '../../context/ThemeContext';
 
 const DAYS = [
@@ -86,13 +86,9 @@ export const VisualTelemetrySection: React.FC = () => {
     <section className="py-24 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
         <div>
-          <LandingLeadingPill
-            borderVariant="primary"
-            textVariant="primary"
-            className="mb-2"
-          >
+          <HomeSectionBadge icon="📊" className="mb-2">
             Telemetry Engine
-          </LandingLeadingPill>
+          </HomeSectionBadge>
           <h2 className="text-2xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
             Dual-Resource Historical Variance
           </h2>
