@@ -204,9 +204,14 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
   const profileItems: ProfileMenuItem[] = useMemo(
     () => [
       {
-        label: `Subscription (${currentPlanId})`,
+        label: 'Subscription Plans',
         icon: <CreditCard className="size-4" />,
-        value: user?.tier ?? 'Standard Pro',
+        value:
+          currentPlanId === 'standard'
+            ? 'Plus (Preview)'
+            : currentPlanId === 'premium'
+            ? 'Business (Preview)'
+            : 'Starter (Free)',
         onSelect: () => navigate('/subscription'),
       },
       {
@@ -227,7 +232,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title }) => {
         onSelect: () => setAssistantOpen(true),
       },
     ],
-    [currentPlanId, user?.tier, user?.sustainabilityScore, navigate]
+    [currentPlanId, user?.sustainabilityScore, navigate]
   );
 
   const handleProfileThemeChange = (nextTheme: AccountTheme) => {

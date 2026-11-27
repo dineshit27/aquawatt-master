@@ -12,74 +12,77 @@ export interface PlanComparisonRow {
   premiumAccent?: 'blue' | 'green' | 'muted';
 }
 
-export function getPlanPrice(plan: SubscriptionPlan, billingCycle: BillingCycle): number {
-  return billingCycle === 'yearly' ? plan.priceYearlyMonthlyEquivalent : plan.priceMonthly;
+export function getPlanPrice(plan: SubscriptionPlan, _billingCycle: BillingCycle = 'monthly'): number {
+  return plan.priceMonthly;
+}
+
+export function formatPlanPriceValue(plan: SubscriptionPlan): string {
+  const prefix = plan.pricePrefix ?? '';
+  return `${prefix}₹${plan.priceMonthly.toLocaleString('en-IN')}`;
 }
 
 export function formatPlanPriceLabel(
   plan: SubscriptionPlan,
-  billingCycle: BillingCycle
+  _billingCycle: BillingCycle = 'monthly'
 ): string {
-  const price = getPlanPrice(plan, billingCycle);
-  const suffix = billingCycle === 'yearly' && price > 0 ? ' · billed annually' : '';
-  return `${plan.name} (₹${price.toLocaleString('en-IN')}/mo${suffix})`;
+  return `${plan.name} (${formatPlanPriceValue(plan)}/month)`;
 }
 
 export function resolvePlanActionLabel(planId: PlanId): string {
   switch (planId) {
     case 'premium':
-      return 'Upgrade to Enterprise';
+      return 'Contact Sales';
     case 'free':
-      return 'Downgrade to Starter';
+      return 'Get Started';
     case 'standard':
     default:
-      return 'Switch to Pro';
+      return 'Upgrade to Plus';
   }
 }
 
 export function getPlanComparisonRows(): PlanComparisonRow[] {
   return [
     {
-      feature: 'Sensor Input Capacity',
-      freeLabel: '2 nodes',
-      standardLabel: '12 nodes',
-      premiumLabel: 'Unlimited',
+      feature: 'Device Scope',
+      freeLabel: '1 monitoring device',
+      standardLabel: 'Single facility telemetry',
+      premiumLabel: 'Multi-device (deployment-scoped)',
       standardAccent: 'blue',
     },
     {
-      feature: 'Telemetry Retention',
-      freeLabel: '7 Days',
-      standardLabel: '365 Days',
-      premiumLabel: 'Unlimited (Cold Storage)',
+      feature: 'Water Usage Analytics',
+      freeLabel: 'Basic usage & totals',
+      standardLabel: 'Extended trends & comparisons',
+      premiumLabel: 'Facility & cross-device analytics',
       standardAccent: 'blue',
     },
     {
-      feature: 'Anomaly Alert Dispatch Speed',
-      freeLabel: '15 min batch',
-      standardLabel: 'Simulated sub-second',
-      premiumLabel: 'Simulated stream',
-      standardAccent: 'blue',
-    },
-    {
-      feature: 'Simulated Valve Isolation Test',
-      freeLabel: 'Manual Only',
-      standardLabel: 'Frontend Demonstration',
-      premiumLabel: 'Multi-Zone Demo',
+      feature: 'Possible-Leak & Alert Insights',
+      freeLabel: 'Basic alert visibility',
+      standardLabel: 'Explainable FS-S401 insights & history',
+      premiumLabel: 'Facility alert review',
       standardAccent: 'green',
       premiumAccent: 'green',
     },
     {
-      feature: 'Telemetry Audit Export',
-      freeLabel: 'Not Included',
-      standardLabel: 'CSV Digest',
-      premiumLabel: 'CSV & JSON Audit Export',
+      feature: 'AI & Sustainability Reporting',
+      freeLabel: 'Dashboard overview',
+      standardLabel: 'AI tips & monthly reports',
+      premiumLabel: 'Facility insights & reporting',
       standardAccent: 'blue',
     },
     {
-      feature: 'REST & MQTT Bridge',
-      freeLabel: 'Not Included',
-      standardLabel: 'Read-Only Blueprint',
-      premiumLabel: 'Planned Webhook Blueprint',
+      feature: 'Data Export',
+      freeLabel: 'Not included',
+      standardLabel: 'CSV data export',
+      premiumLabel: 'CSV & JSON data export',
+      standardAccent: 'blue',
+    },
+    {
+      feature: 'Integrations & Onboarding',
+      freeLabel: 'Web console only',
+      standardLabel: 'Standard setup',
+      premiumLabel: 'Read-only MCP / API & custom onboarding',
       standardAccent: 'muted',
       premiumAccent: 'green',
     },
@@ -105,54 +108,53 @@ export const SUBSCRIPTION_FAQ_DATA: Record<
 > = {
   plans: [
     {
-      question: 'What is included across Starter Explorer, Standard Pro, and Enterprise Eco?',
+      question: 'What is included across Starter Explorer, AquaWatt Plus, and AquaWatt Business?',
       answer:
-        'Starter Explorer supports up to 2 sensor nodes with 7-day history for single-bench evaluation. Standard Pro scales to 12 ESP32 nodes, 365-day retention, and CSV digests, while Enterprise Eco adds unlimited node capacity, multi-site hierarchy, and JSON audit exports.',
+        'Starter Explorer (₹0/month) covers 1 monitoring device with basic water usage monitoring, device health status, basic alerts, and basic usage history. AquaWatt Plus (₹149/month) adds extended water analytics, trend comparisons, explainable FS-S401 possible-leak insights, AI conservation recommendations, monthly sustainability reports, and CSV export. AquaWatt Business (starting at ₹499/month) adds multi-device monitoring, facility overview dashboards, integration access, and custom onboarding.',
     },
     {
-      question: 'Does switching plans here charge a real payment method?',
+      question: 'Are paid subscriptions available for live online checkout yet?',
       answer:
-        'No. Plan switching in this console operates in demonstration mode so facility teams can preview tier limits and INR ₹ tariff views without processing live credit card or UPI payments.',
+        'Not yet. Payment processing and automated billing are not active in this release. Selecting a paid tier only previews UI state without charging any payment method or activating a paid subscription; use Contact Sales for AquaWatt Business deployment inquiries.',
     },
     {
-      question: 'How does the Monthly vs. Yearly billing toggle work?',
+      question: 'How is AquaWatt Business priced?',
       answer:
-        'Selecting Yearly Billing displays the 20% annual discount equivalent (₹399/mo for Standard Pro and ₹1,199/mo for Enterprise Eco, billed annually), while Monthly Billing shows standard month-to-month rates.',
+        'AquaWatt Business starts at ₹499/month and is scoped to your facility device count, analytics configuration, and onboarding needs via the Contact Sales inquiry flow.',
     },
   ],
   hardware: [
     {
-      question: 'What hardware architecture does AquaWatt support?',
+      question: 'What hardware is verified in the current AquaWatt setup?',
       answer:
-        'AquaWatt targets ESP32 microcontrollers paired with an operational FS-S401 Hall-effect pulse water flow sensor (GPIO34) and a local 16×2 character LCD display. An INA219 DC power module is modeled in the hardware design with physical calibration pending.',
+        'AquaWatt runs on an ESP32 DevKit with an operational FS-S401 water flow sensor (verified actual flow readings on GPIO34) and a 16×2 LCD display. An INA219 electricity sensor is installed on the hardware rig, but calibration is still pending and it does not yet produce validated electrical readings.',
     },
     {
-      question: 'Are the valve shutoff controls on the dashboard physically connected?',
+      question: 'Are automated valves, pressure sensors, or temperature sensors active?',
       answer:
-        'No. Valve trips, relay toggles, and load-shift controls in the web console are interactive software simulations that demonstrate automated isolation logic without actuating physical valves.',
+        'No. Motorized shutoff valves, line pressure sensors, and water temperature sensors are not physically connected. Any valve toggle controls in the web console operate purely as frontend demonstrations.',
     },
     {
-      question: 'How are bench readings transferred from the ESP32?',
+      question: 'Does AquaWatt monitor household AC electricity right now?',
       answer:
-        'Bench instrumentation outputs flow diagnostics over Serial at 115200 baud and on the local 16×2 LCD. Wi-Fi MQTT-to-Supabase ingestion schemas and services are implemented while end-to-end live hardware pipeline verification remains pending.',
+        'No. Validated household AC electricity monitoring and electrical anomaly detection are not active in this hardware revision because the INA219 DC module is still uncalibrated.',
     },
   ],
   security: [
     {
-      question: 'How are simulated demo baselines separated from physical Supabase data?',
+      question: 'How are demo profiles separated from physical Supabase telemetry?',
       answer:
-        'Demo Mode runs synthetic residential and lab consumption profiles locally, whereas Physical Mode queries authenticated Supabase PostgreSQL tables via Row Level Security and preserves null values for uncalibrated INA219 channels.',
+        'Demo Mode displays synthetic sample profiles locally, while Physical Mode queries authenticated Supabase PostgreSQL tables via Row Level Security and keeps uncalibrated INA219 channels as null instead of fabricating readings.',
     },
     {
-      question: 'How is multi-user facility data isolated?',
+      question: 'How is multi-user data protected?',
       answer:
-        'All authenticated API routes, MCP tools, and Supabase queries verify the caller’s Supabase JWT and enforce user ownership via PostgreSQL Row Level Security (RLS), preventing cross-tenant access.',
+        'Authenticated routes, API endpoints, and MCP tools verify the caller’s Supabase JWT and enforce per-user ownership via PostgreSQL Row Level Security (RLS).',
     },
     {
-      question: 'Can I export consumption and ledger records for audits?',
+      question: 'What data formats can I export today?',
       answer:
-        'Yes. Export actions generate structured .CSV and .JSON files containing timestamped flow readings, INR ₹ cost calculations, and event ledger entries.',
+        'The Dashboard and Analytics views support browser-generated CSV and JSON downloads for the currently loaded telemetry window and tariff estimates.',
     },
   ],
 };
-

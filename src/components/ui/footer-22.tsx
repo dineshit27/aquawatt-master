@@ -240,9 +240,11 @@ export default function Footer22({
                   {newsletterStatus.message}
                 </p>
               )}
-              <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-[280px] mt-1">
-                {contactDescription}
-              </p>
+              {contactDescription ? (
+                <p className="text-[14px] text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-[280px] mt-1">
+                  {contactDescription}
+                </p>
+              ) : null}
             </div>
           </motion.div>
         </div>

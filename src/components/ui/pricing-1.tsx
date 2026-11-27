@@ -13,10 +13,13 @@ export interface PricingPlan {
   title: string;
   description: string;
   price: string;
+  pricePrefix?: string;
   priceSuffix?: string;
   features: PricingFeature[];
+  buttonMeta?: string;
   buttonText: string;
   isPopular?: boolean;
+  badgeText?: string;
 }
 
 export interface Pricing1Props {
@@ -46,7 +49,7 @@ export function Pricing1({ plans, className, onSelectPlan }: Pricing1Props) {
                     variant="default"
                     className="rounded-none px-3 py-1 text-xs font-semibold shadow-[0px_0px_4px_1px_rgba(0,0,0,0.1),inset_0_0px_4px_1px_rgba(255,255,255,0.45),inset_0_0.5px_0px_0px_rgba(255,255,255,0.35)]"
                   >
-                    Popular
+                    {plan.badgeText ?? 'Popular'}
                   </Badge>
                 </div>
               )}
@@ -60,7 +63,12 @@ export function Pricing1({ plans, className, onSelectPlan }: Pricing1Props) {
                 </p>
               </div>
 
-              <div className="mb-6 flex items-baseline gap-2">
+              <div className="mb-6 flex flex-wrap items-baseline gap-2">
+                {plan.pricePrefix && (
+                  <span className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
+                    {plan.pricePrefix.trim()}
+                  </span>
+                )}
                 <span className="text-foreground text-5xl font-extrabold tracking-tight">
                   {plan.price}
                 </span>
@@ -93,7 +101,7 @@ export function Pricing1({ plans, className, onSelectPlan }: Pricing1Props) {
                     className="group border-primary flex min-h-14 h-auto w-full items-center justify-between gap-2 rounded-none border px-4 sm:px-6 py-3 font-semibold shadow-[0px_0px_4px_1px_rgba(0,0,0,0.1),inset_0_0px_4px_1px_rgba(255,255,255,0.45),inset_0_1px_0px_0px_rgba(255,255,255,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/85 hover:shadow-lg active:translate-y-0 cursor-pointer"
                   >
                     <span className="text-sm sm:text-base transition-transform duration-200 group-hover:translate-x-0.5">
-                      Get started for
+                      {plan.buttonMeta ?? 'Get started for'}
                     </span>
                     <div className="bg-primary-foreground/50 group-hover:bg-primary-foreground/85 mx-2 sm:mx-4 h-[1px] flex-1 min-w-4 transition-colors duration-200" />
                     <span className="text-sm sm:text-base font-bold transition-transform duration-200 group-hover:-translate-x-0.5">
@@ -108,7 +116,7 @@ export function Pricing1({ plans, className, onSelectPlan }: Pricing1Props) {
                     className="group flex min-h-14 h-auto w-full cursor-pointer items-center justify-between gap-2 rounded-none border border-border/80 bg-transparent px-4 sm:px-5 py-3 outline-none transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary/8 hover:text-primary dark:hover:bg-primary/12 active:translate-y-0"
                   >
                     <span className="text-foreground group-hover:text-primary text-sm sm:text-base font-medium transition-all duration-200 group-hover:translate-x-0.5">
-                      Get started for
+                      {plan.buttonMeta ?? 'Get started for'}
                     </span>
                     <div className="bg-border group-hover:bg-primary/45 mx-2 sm:mx-4 h-[2px] flex-1 min-w-4 transition-colors duration-200" />
                     <span className="text-foreground group-hover:text-primary text-sm sm:text-base font-bold transition-all duration-200 group-hover:-translate-x-0.5">

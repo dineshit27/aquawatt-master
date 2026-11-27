@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { Seo } from '../components/common/Seo';
 import { useApp } from '../context/AppContext';
@@ -26,25 +26,32 @@ import {
 } from '../utils/subscriptionHelpers';
 
 const SUBSCRIPTION_HERO_STATS: FluxPayStat[] = [
-  { value: 3, label: 'telemetry plan tiers' },
-  { value: 20, suffix: '%', label: 'annual billing savings' },
-  { value: 365, suffix: 'd', label: 'Standard Pro retention' },
+  { value: 0, prefix: '₹', label: 'Starter Explorer / month' },
+  { value: 149, prefix: '₹', label: 'AquaWatt Plus / month' },
+  { value: 499, prefix: '₹', suffix: '+', label: 'AquaWatt Business / month' },
 ];
 
 const SUBSCRIPTION_HERO_TRANSFERS: FluxPayTransfer[] = [
   {
-    route: 'Standard Pro · 12-Mo Annual',
-    from: { code: 'MO', symbol: 'M', amount: 12, decimals: 0 },
+    route: 'Starter Explorer · 1 Device',
+    from: { code: 'MO', symbol: 'M', amount: 1, decimals: 0 },
     to: { code: 'INR', symbol: '₹', decimals: 0 },
-    rate: 399,
-    settled: 'Saves ₹1,200 / yr',
+    rate: 0,
+    settled: 'Free single-device telemetry',
   },
   {
-    route: 'Enterprise Eco · 12-Mo Annual',
-    from: { code: 'MO', symbol: 'M', amount: 12, decimals: 0 },
+    route: 'AquaWatt Plus · Analytics',
+    from: { code: 'MO', symbol: 'M', amount: 1, decimals: 0 },
     to: { code: 'INR', symbol: '₹', decimals: 0 },
-    rate: 1199,
-    settled: 'Saves ₹3,600 / yr',
+    rate: 149,
+    settled: 'AI tips & FS-S401 insights',
+  },
+  {
+    route: 'AquaWatt Business · Facility',
+    from: { code: 'MO', symbol: 'M', amount: 1, decimals: 0 },
+    to: { code: 'INR', symbol: '₹', decimals: 0 },
+    rate: 499,
+    settled: 'Starting at ₹499 / mo',
   },
   {
     route: 'Water Sub-Meter · Sample Tariff',
@@ -53,19 +60,12 @@ const SUBSCRIPTION_HERO_TRANSFERS: FluxPayTransfer[] = [
     rate: 25,
     settled: 'Municipal sample rate',
   },
-  {
-    route: 'Energy Sub-Meter · Sample Tariff',
-    from: { code: 'kWh', symbol: 'W', amount: 540, decimals: 0 },
-    to: { code: 'INR', symbol: '₹', decimals: 0 },
-    rate: 7.5,
-    settled: 'Grid slab sample rate',
-  },
 ];
 
 export const Subscription: React.FC = () => {
   const { currentPlanId, changeSubscriptionPlan, showToast } = useApp();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
   const [selectedPlanToChange, setSelectedPlanToChange] = useState<'free' | 'standard' | 'premium' | null>(null);
 
   useEffect(() => {
@@ -74,18 +74,17 @@ export const Subscription: React.FC = () => {
     if (!planParam && !billingParam) return;
 
     const resolved = resolveSubscriptionQueryParams(planParam, billingParam);
-    if (resolved.billingCycle) {
-      setBillingCycle(resolved.billingCycle);
-    }
     if (resolved.planId) {
       const targetPlan = resolved.planId;
       window.setTimeout(() => {
         document.getElementById('subscription-plans')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 80);
 
-      if (targetPlan === currentPlanId) {
+      if (targetPlan === 'premium') {
+        showToast('AquaWatt Business starts at ₹499/month. Use Contact Sales for deployment inquiries.', 'info');
+      } else if (targetPlan === currentPlanId) {
         const currentPlan = SUBSCRIPTION_PLANS.find(p => p.id === currentPlanId);
-        showToast(`${currentPlan?.name ?? 'Selected plan'} is already your active plan.`, 'info');
+        showToast(`${currentPlan?.name ?? 'Selected plan'} is currently selected in preview.`, 'info');
       } else {
         setSelectedPlanToChange(targetPlan);
       }
@@ -99,6 +98,14 @@ export const Subscription: React.FC = () => {
       changeSubscriptionPlan(selectedPlanToChange);
       setSelectedPlanToChange(null);
     }
+  };
+
+  const handlePlanButtonClick = (planId: 'free' | 'standard' | 'premium') => {
+    if (planId === 'premium') {
+      navigate('/contact?plan=business');
+      return;
+    }
+    setSelectedPlanToChange(planId);
   };
 
   const pendingPlanObj = selectedPlanToChange
@@ -129,7 +136,7 @@ export const Subscription: React.FC = () => {
           stats={SUBSCRIPTION_HERO_STATS}
           transfers={SUBSCRIPTION_HERO_TRANSFERS}
           transferTitle="Tariff & Plan Preview"
-          transferLabel="Sample AquaWatt annual subscription and INR utility sub-meter tariff previews"
+          transferLabel="Sample AquaWatt monthly plan tiers and INR water sub-meter tariff previews"
           transferSteps={['Metered', 'Rated', 'Projected']}
           sendLabel="Input"
           receiveLabel="Estimate"
@@ -144,68 +151,37 @@ export const Subscription: React.FC = () => {
       }
       cta={
         <Cta69
-          badge={{ label: 'Enterprise & Municipal Pilots' }}
+          badge={{ label: 'Business & Facility Deployments' }}
           heading="Let's build a conservation plan worth keeping."
           button={{
             label: 'Start a deployment conversation',
-            href: '/contact',
+            href: '/contact?plan=business',
           }}
           labels={{
             marqueePhrase: 'Worth keeping',
-            note: 'Need multi-building metering, custom MQTT webhooks, or municipal ESG audit exports? One conversation, zero guesswork.',
-            footnote: 'Onboarding commercial and campus cohorts for the Q4 telemetry cycle.',
+            note: 'Need multi-device water monitoring, facility analytics, or read-only API integration? One conversation, zero guesswork.',
+            footnote: 'Scoping custom AquaWatt Business deployments via direct onboarding.',
           }}
           className="border-t border-slate-200/80 dark:border-slate-800/80"
         />
       }
     >
-      <Seo title="Subscription Plans — AquaWatt" description="Manage your AquaWatt telemetry subscription." noindex />
+      <Seo title="Subscription Plans — AquaWatt" description="Explore AquaWatt Starter Explorer, AquaWatt Plus, and AquaWatt Business telemetry plans." noindex />
       <div className="space-y-8 max-w-6xl mx-auto">
         {/* Header */}
         <div id="subscription-plans" className="text-center max-w-2xl mx-auto scroll-mt-6">
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#174A8B] dark:text-sky-400">
-            Hardware & SaaS Tiers
+            Hardware &amp; SaaS Tiers
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
             Predictable Plans for Every Property
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
-            Scalable sub-second telemetry, continuous anomaly surveillance, and simulated valve shutoff testing.
+            Water telemetry, usage history, explainable FS-S401 possible-leak insights, and AI conservation guidance in transparent INR tiers.
           </p>
 
-          {/* Billing Switcher */}
-          <div
-            role="group"
-            aria-label="Billing cycle"
-            className="mt-6 inline-flex items-center gap-2 p-1 rounded-full bg-white dark:bg-[#121B2B] border border-slate-200 dark:border-slate-800 shadow-xs text-xs"
-          >
-            <button
-              type="button"
-              aria-pressed={billingCycle === 'monthly'}
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-4 py-1.5 rounded-full font-medium transition-colors cursor-pointer ${
-                billingCycle === 'monthly'
-                  ? 'bg-[#174A8B] text-white shadow-xs font-semibold'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-            >
-              Monthly Billing
-            </button>
-            <button
-              type="button"
-              aria-pressed={billingCycle === 'yearly'}
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-4 py-1.5 rounded-full font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
-                billingCycle === 'yearly'
-                  ? 'bg-[#174A8B] text-white shadow-xs font-semibold'
-                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-            >
-              <span>Yearly Billing</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">
-                Save 20%
-              </span>
-            </button>
+          <div className="mt-5 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-[#121B2B] border border-slate-200 dark:border-slate-800 text-[11px] font-mono text-slate-600 dark:text-slate-300">
+            Early-access pricing preview · Online checkout is not yet active
           </div>
         </div>
 
@@ -213,7 +189,8 @@ export const Subscription: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {SUBSCRIPTION_PLANS.map(plan => {
             const isCurrent = currentPlanId === plan.id;
-            const price = getPlanPrice(plan, billingCycle);
+            const price = getPlanPrice(plan);
+            const isPaidPreviewSelected = isCurrent && plan.id !== 'free';
 
             return (
               <div
@@ -227,8 +204,13 @@ export const Subscription: React.FC = () => {
                 }`}
               >
                 {isCurrent && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#174A8B] text-white text-[10px] font-mono font-bold uppercase tracking-wider">
-                    Your Current Plan
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#174A8B] text-white text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap">
+                    {isPaidPreviewSelected ? 'UI Preview Selected' : 'Default Free Tier'}
+                  </span>
+                )}
+                {!isCurrent && plan.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#237A57] text-white text-[10px] font-mono font-bold uppercase tracking-wider whitespace-nowrap">
+                    Recommended
                   </span>
                 )}
 
@@ -240,12 +222,17 @@ export const Subscription: React.FC = () => {
                     {plan.tagline}
                   </p>
 
-                  <div className="mt-5 flex items-baseline gap-1.5">
+                  <div className="mt-5 flex flex-wrap items-baseline gap-1.5">
+                    {plan.pricePrefix && (
+                      <span className="text-xs font-mono uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                        {plan.pricePrefix.trim()}
+                      </span>
+                    )}
                     <span className="text-4xl font-extrabold font-mono text-slate-900 dark:text-white">
                       ₹{price}
                     </span>
                     <span className="text-xs text-slate-400 font-mono">
-                      / month {billingCycle === 'yearly' && price > 0 && '(billed annually)'}
+                      / month
                     </span>
                   </div>
 
@@ -260,20 +247,29 @@ export const Subscription: React.FC = () => {
                 </div>
 
                 <div className="mt-8 pt-4">
-                  {isCurrent ? (
+                  {plan.id === 'premium' ? (
+                    <button
+                      type="button"
+                      onClick={() => handlePlanButtonClick(plan.id)}
+                      className="w-full py-2.5 rounded-xl font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 bg-[#174A8B] hover:bg-[#123A6F] text-white shadow-xs"
+                    >
+                      <span>{resolvePlanActionLabel(plan.id)}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  ) : isCurrent ? (
                     <button
                       type="button"
                       disabled
                       className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 font-semibold text-xs text-center cursor-default"
                     >
-                      Active Plan
+                      {plan.id === 'free' ? 'Current Tier (Free)' : 'Previewing Selected Tier'}
                     </button>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => setSelectedPlanToChange(plan.id)}
+                      onClick={() => handlePlanButtonClick(plan.id)}
                       className={`w-full py-2.5 rounded-xl font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
-                        plan.id === 'premium'
+                        plan.popular
                           ? 'bg-[#174A8B] hover:bg-[#123A6F] text-white shadow-xs'
                           : 'border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
@@ -299,10 +295,10 @@ export const Subscription: React.FC = () => {
           <table className="w-full text-xs text-left">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 font-mono text-[11px] text-slate-400 uppercase">
-                <th className="py-3 px-4">Feature / Protocol</th>
+                <th className="py-3 px-4">Feature / Capability</th>
                 <th className="py-3 px-4">Starter Explorer</th>
-                <th className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">Standard Pro</th>
-                <th className="py-3 px-4">Enterprise Eco</th>
+                <th className="py-3 px-4 text-[#174A8B] dark:text-sky-400 font-bold">AquaWatt Plus</th>
+                <th className="py-3 px-4">AquaWatt Business</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
@@ -348,25 +344,25 @@ export const Subscription: React.FC = () => {
           className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-[#121B2B] shadow-xs"
         />
 
-        {/* MODAL: CHANGE PLAN CONFIRMATION */}
+        {/* MODAL: PLAN PREVIEW CONFIRMATION */}
         <Modal
           isOpen={selectedPlanToChange !== null}
           onClose={() => setSelectedPlanToChange(null)}
-          title="Confirm Plan Change"
-          description="Your telemetry capabilities will adjust immediately for this facility."
+          title={selectedPlanToChange === 'standard' ? 'Preview AquaWatt Plus' : 'Switch to Starter Explorer'}
+          description="UI tier preview only — live subscription checkout is not enabled."
           maxWidth="sm"
         >
           <div className="space-y-4 text-xs">
             <p className="text-slate-600 dark:text-slate-300">
-              Are you sure you want to switch to{' '}
+              Switch the local interface preview to{' '}
               <span className="font-bold text-slate-900 dark:text-white">
-                {pendingPlanObj ? formatPlanPriceLabel(pendingPlanObj, billingCycle) : ''}
+                {pendingPlanObj ? formatPlanPriceLabel(pendingPlanObj) : ''}
               </span>
               ?
             </p>
 
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-[11px] font-mono text-slate-500">
-              Note: Demonstration environment. No actual credit card charge will be made.
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-[11px] font-mono text-slate-500 dark:text-slate-400 leading-relaxed">
+              Early-access notice: Payment processing and automated billing are not active yet. No charge is made and no paid subscription is activated on your account.
             </div>
 
             <div className="pt-2 flex justify-end gap-2">
@@ -382,7 +378,7 @@ export const Subscription: React.FC = () => {
                 onClick={handleConfirmPlanChange}
                 className="px-4 py-2 rounded-lg bg-[#174A8B] hover:bg-[#123A6F] text-white font-semibold cursor-pointer"
               >
-                Confirm Switch
+                {selectedPlanToChange === 'standard' ? 'Preview Plus View' : 'Confirm Starter Tier'}
               </button>
             </div>
           </div>

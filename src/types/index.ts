@@ -139,11 +139,13 @@ export interface SubscriptionPlan {
   tagline: string;
   priceMonthly: number;
   priceYearlyMonthlyEquivalent: number;
+  pricePrefix?: string;
+  ctaLabel: string;
   popular?: boolean;
   features: string[];
   limits: {
-    sensorsMax: number | 'Unlimited';
-    dataRetentionDays: number | 'Unlimited';
+    sensorsMax: number | string;
+    dataRetentionDays: number | string;
     alertSpeed: string;
     aiInsightsFrequency: string;
     supportLevel: string;

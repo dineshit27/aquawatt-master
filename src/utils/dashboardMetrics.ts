@@ -300,9 +300,14 @@ export function resolveSubscriptionQueryParams(
 } {
   const planMap: Record<string, 'free' | 'standard' | 'premium'> = {
     starter: 'free',
+    'starter-explorer': 'free',
     free: 'free',
+    plus: 'standard',
+    'aquawatt-plus': 'standard',
     'standard-pro': 'standard',
     standard: 'standard',
+    business: 'premium',
+    'aquawatt-business': 'premium',
     'enterprise-eco': 'premium',
     premium: 'premium',
   };

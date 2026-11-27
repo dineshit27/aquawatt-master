@@ -159,13 +159,13 @@ const CSS =
 export default function PulseStripeHero({
   eyebrow = "Transparent Utility Telemetry Plans",
   title = "Predictable plans for *every meter.*",
-  description = "Start free on a single ESP32 testbench node, or scale to multi-zone leak surveillance, 365-day analytics, and ESG audit exports.",
+  description = "Start free on 1 monitoring device with Starter Explorer, upgrade to AquaWatt Plus for extended water analytics, or contact sales for AquaWatt Business.",
   cta = { label: "Compare Pricing Tiers" },
   stats = [
     { value: 0, prefix: "₹", label: "Starter Explorer / month" },
-    { value: 399, prefix: "₹", label: "Standard Pro (annual / mo)" },
-    { value: 1199, prefix: "₹", label: "Enterprise Eco (annual / mo)" },
-    { value: 365, suffix: "d", label: "Pro telemetry retention" },
+    { value: 149, prefix: "₹", label: "AquaWatt Plus / month" },
+    { value: 499, prefix: "₹", suffix: "+", label: "AquaWatt Business / month" },
+    { value: 1, label: "device on Starter tier" },
   ],
   logos = ["ESP32 DevKit", "FS-S401 Flow", "16x2 Character LCD", "INA219 (Calibration Pending)", "MQTT Pub/Sub", "Supabase Postgres", "INR ₹ Tariff Engine", "CSV & JSON Audits"],
   statement = "One telemetry console from your first ESP32 breadboard rig to full campus sub-metering—with transparent tiers built for real hardware.",

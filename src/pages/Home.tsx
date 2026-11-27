@@ -25,7 +25,7 @@ import {
   Thermometer,
   Monitor,
 } from 'lucide-react';
-import { TESTIMONIALS } from '../data/mockData';
+import { SUBSCRIPTION_PLANS, TESTIMONIALS } from '../data/mockData';
 import { ConservationLedgerSection } from '../components/home/ConservationLedgerSection';
 import { FeatureMosaicSection } from '../components/home/FeatureMosaicSection';
 import { FaqSection } from '../components/home/FaqSection';
@@ -38,7 +38,6 @@ import sensorImg from '../assets/images/iot_ultrasonic_flow_sensor_1793896013850
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { showToast } = useApp();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
 
   // Interactive Valve Telemetry State
   const [valveState, setValveState] = useState<'open' | 'closed'>('open');
@@ -68,54 +67,19 @@ export const Home: React.FC = () => {
     }
   };
 
-  const pricingPlans: PricingPlan[] = [
-    {
-      id: 'starter',
-      title: 'Starter Explorer',
-      description: 'Essential telemetry for conscious residential apartments and studios.',
-      price: '₹0',
-      priceSuffix: '/ month',
-      features: [
-        { text: '2 Sensor inputs' },
-        { text: '24-hr live telemetry streaming' },
-        { text: 'Standard community challenges' },
-        { text: 'Mobile & web console access' },
-      ],
-      buttonText: 'Free',
-      isPopular: false,
-    },
-    {
-      id: 'standard-pro',
-      title: 'Standard Pro',
-      description: 'Comprehensive IoT telemetry, simulated anomaly alerts, and conservation insights.',
-      price: billingCycle === 'yearly' ? '₹399' : '₹499',
-      priceSuffix: '/ month',
-      features: [
-        { text: 'Up to 12 smart sensors & nodes' },
-        { text: 'Instant simulated leak alert trigger' },
-        { text: 'Simulated valve trip test controls' },
-        { text: 'Full AI predictive conservation' },
-        { text: 'Real CSV & JSON historical audit export' },
-      ],
-      buttonText: billingCycle === 'yearly' ? '₹399' : '₹499',
-      isPopular: true,
-    },
-    {
-      id: 'enterprise-eco',
-      title: 'Enterprise Eco',
-      description: 'Multi-node testbench telemetry, facility submeters, and carbon avoidance accounting.',
-      price: billingCycle === 'yearly' ? '₹1,199' : '₹1,499',
-      priceSuffix: '/ month',
-      features: [
-        { text: 'Unlimited nodes & submeters' },
-        { text: 'Carbon emissions avoidance ledger' },
-        { text: 'REST & MQTT webhook bridges' },
-        { text: 'Repository issue & architecture docs' },
-      ],
-      buttonText: billingCycle === 'yearly' ? '₹1,199' : '₹1,499',
-      isPopular: false,
-    },
-  ];
+  const pricingPlans: PricingPlan[] = SUBSCRIPTION_PLANS.map((plan) => ({
+    id: plan.id,
+    title: plan.name,
+    description: plan.tagline,
+    price: `₹${plan.priceMonthly.toLocaleString('en-IN')}`,
+    pricePrefix: plan.pricePrefix,
+    priceSuffix: '/ month',
+    features: plan.features.map((text) => ({ text })),
+    buttonMeta: plan.pricePrefix ? `From ₹${plan.priceMonthly}/mo` : `₹${plan.priceMonthly} / month`,
+    buttonText: plan.ctaLabel,
+    isPopular: Boolean(plan.popular),
+    badgeText: plan.popular ? 'Recommended' : undefined,
+  }));
 
   const circuitNodes: CircuitNodeType[] = [
     {
@@ -696,42 +660,22 @@ export const Home: React.FC = () => {
             <h2 className="text-3xl font-extrabold font-heading text-slate-900 dark:text-white mt-1">
               Engineered Telemetry Subscriptions
             </h2>
-            
-            <div role="group" aria-label="Billing frequency" className="mt-5 inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1 rounded-2xl sm:rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono">
-              <button
-                type="button"
-                aria-pressed={billingCycle === 'monthly'}
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-1.5 rounded-full font-medium transition-colors cursor-pointer ${
-                  billingCycle === 'monthly'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-semibold'
-                    : 'text-slate-500'
-                }`}
-              >
-                Monthly Billing
-              </button>
-              <button
-                type="button"
-                aria-pressed={billingCycle === 'yearly'}
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-4 py-1.5 rounded-full font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
-                  billingCycle === 'yearly'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-semibold'
-                    : 'text-slate-500'
-                }`}
-              >
-                <span>Yearly Billing</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">
-                  Save 20%
-                </span>
-              </button>
-            </div>
+            <p className="mt-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              Transparent monthly INR pricing aligned with current FS-S401 water monitoring and analytics.
+              Online paid checkout is not active yet.
+            </p>
           </div>
 
           <Pricing1
             plans={pricingPlans}
             className="px-0 md:px-0"
-            onSelectPlan={(planId) => navigate(`/subscription?plan=${planId}&billing=${billingCycle}`)}
+            onSelectPlan={(planId) => {
+              if (planId === 'premium') {
+                navigate('/contact?plan=business');
+                return;
+              }
+              navigate(`/subscription?plan=${planId}`);
+            }}
           />
         </div>
       </section>

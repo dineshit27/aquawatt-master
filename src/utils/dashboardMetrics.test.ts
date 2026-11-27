@@ -113,6 +113,14 @@ test('resolveSubscriptionQueryParams maps home pricing tier slugs to canonical s
     planId: 'free',
     billingCycle: 'monthly',
   });
+  assert.deepEqual(resolveSubscriptionQueryParams('plus', null), {
+    planId: 'standard',
+    billingCycle: null,
+  });
+  assert.deepEqual(resolveSubscriptionQueryParams('business', null), {
+    planId: 'premium',
+    billingCycle: null,
+  });
   assert.deepEqual(resolveSubscriptionQueryParams('standard-pro', 'yearly'), {
     planId: 'standard',
     billingCycle: 'yearly',

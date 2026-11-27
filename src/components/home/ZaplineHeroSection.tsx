@@ -363,7 +363,7 @@ export const ZaplineHeroSection: React.FC = () => {
               </h1>
 
               <p className="zap-lede zap-anim-lede text-balance">
-                Pulse-level ESP32 water flow, electrical load telemetry, and Gemini insights—unified in one crisp console.
+              A smart IoT platform that monitors water flow, tracks resource usage, and turns sensor data into useful insights.
               </p>
 
               <div className="zap-actions zap-anim-actions">

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { Seo } from '../components/common/Seo';
 import { useApp } from '../context/AppContext';
@@ -23,6 +24,7 @@ import {
 
 export const Contact: React.FC = () => {
   const { showToast } = useApp();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [form, setForm] = useState<ContactFormState>({
     fullName: '',
     email: '',
@@ -30,6 +32,20 @@ export const Contact: React.FC = () => {
     subject: '',
     message: '',
   });
+
+  useEffect(() => {
+    if (searchParams.get('plan') === 'business') {
+      setForm(prev => ({
+        ...prev,
+        category: 'Billing & Plans',
+        subject: prev.subject || 'AquaWatt Business Deployment Inquiry (Starting at ₹499/mo)',
+      }));
+      setSearchParams({}, { replace: true });
+      window.setTimeout(() => {
+        document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' });
+      }, 80);
+    }
+  }, [searchParams, setSearchParams]);
 
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormState, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

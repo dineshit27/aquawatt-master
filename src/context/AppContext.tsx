@@ -96,7 +96,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [alerts, setAlerts] = useState<ConsumptionAlert[]>(telemetryService.getInitialAlerts());
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>(telemetryService.getInitialRecommendations());
   const [challenges, setChallenges] = useState<CommunityChallenge[]>(COMMUNITY_CHALLENGES);
-  const [currentPlanId, setCurrentPlanId] = useState<'free' | 'standard' | 'premium'>('standard');
+  const [currentPlanId, setCurrentPlanId] = useState<'free' | 'standard' | 'premium'>('free');
   const [isSimulatingLive, setIsSimulatingLive] = useState<boolean>(true);
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
 
@@ -735,14 +735,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const changeSubscriptionPlan = useCallback(
     (planId: 'free' | 'standard' | 'premium') => {
       setCurrentPlanId(planId);
-      const tierLabel: UserProfile['tier'] =
+      const displayPlanName =
         planId === 'free'
-          ? 'Free Explorer'
+          ? 'Starter Explorer'
           : planId === 'standard'
-          ? 'Standard Pro'
-          : 'Enterprise Eco';
-      setUser(prev => (prev ? { ...prev, tier: tierLabel } : prev));
-      showToast(`(Demo Mode) Plan view switched to ${tierLabel}. No payment charged.`, 'success');
+          ? 'AquaWatt Plus'
+          : 'AquaWatt Business';
+      showToast(
+        planId === 'free'
+          ? `Switched to ${displayPlanName} (₹0/month).`
+          : `UI preview updated to ${displayPlanName}. Online checkout is not active and no charge was made.`,
+        'info'
+      );
     },
     [showToast]
   );

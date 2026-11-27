@@ -20,6 +20,8 @@ import { FAQ } from '../components/ui/faq-tabs.js';
 import FluxPay from '../components/ui/fluxpay.js';
 import { ContainerScroll } from '../components/ui/container-scroll-animation.js';
 import { BrandLogo, AQUAWATT_LOGO_SRC } from '../components/common/BrandLogo.js';
+import { Footer } from '../components/navigation/Footer.js';
+import { MemoryRouter } from 'react-router-dom';
 import { SUBSCRIPTION_PLANS } from '../data/mockData.js';
 
 describe('Support Service & Subscription Helpers', () => {
@@ -69,23 +71,34 @@ describe('Support Service & Subscription Helpers', () => {
     assert.strictEqual(filterFaqs(sampleFaqs, 'nonexistent').length, 0);
   });
 
-  it('computes billing cycle pricing labels, action labels, and comparison rows without fabricated SLA claims', () => {
-    const proPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'standard');
-    assert.ok(proPlan);
+  it('computes corrected pricing labels, action labels, and comparison rows without Unlimited or SLA claims', () => {
+    const starterPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'free');
+    const plusPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'standard');
+    const businessPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium');
+    assert.ok(starterPlan && plusPlan && businessPlan);
 
-    assert.strictEqual(getPlanPrice(proPlan, 'monthly'), proPlan.priceMonthly);
-    assert.strictEqual(getPlanPrice(proPlan, 'yearly'), proPlan.priceYearlyMonthlyEquivalent);
+    assert.strictEqual(starterPlan.name, 'Starter Explorer');
+    assert.strictEqual(getPlanPrice(starterPlan), 0);
 
-    const annualLabel = formatPlanPriceLabel(proPlan, 'yearly');
-    assert.ok(annualLabel.includes('billed annually'));
+    assert.strictEqual(plusPlan.name, 'AquaWatt Plus');
+    assert.strictEqual(getPlanPrice(plusPlan), 149);
+    assert.strictEqual(formatPlanPriceLabel(plusPlan), 'AquaWatt Plus (₹149/month)');
 
-    assert.strictEqual(resolvePlanActionLabel('free'), 'Downgrade to Starter');
-    assert.strictEqual(resolvePlanActionLabel('standard'), 'Switch to Pro');
-    assert.strictEqual(resolvePlanActionLabel('premium'), 'Upgrade to Enterprise');
+    assert.strictEqual(businessPlan.name, 'AquaWatt Business');
+    assert.strictEqual(getPlanPrice(businessPlan), 499);
+    assert.strictEqual(formatPlanPriceLabel(businessPlan), 'AquaWatt Business (Starting at ₹499/month)');
+
+    assert.strictEqual(resolvePlanActionLabel('free'), 'Get Started');
+    assert.strictEqual(resolvePlanActionLabel('standard'), 'Upgrade to Plus');
+    assert.strictEqual(resolvePlanActionLabel('premium'), 'Contact Sales');
 
     const rows = getPlanComparisonRows();
     assert.strictEqual(rows.length, 6);
     assert.ok(rows.every(r => !r.feature.toLowerCase().includes('sla')));
+    const serialized = JSON.stringify(SUBSCRIPTION_PLANS) + JSON.stringify(rows);
+    assert.ok(!serialized.toLowerCase().includes('unlimited'));
+    assert.ok(!serialized.toLowerCase().includes('simulated leak'));
+    assert.ok(!serialized.toLowerCase().includes('simulated valve'));
   });
 
   it('renders tabbed Subscription FAQ cleanly via SSR with AquaWatt-grounded categories', () => {
@@ -104,6 +117,8 @@ describe('Support Service & Subscription Helpers', () => {
     assert.ok(html.includes('Hardware &amp; Sensors'));
     assert.ok(html.includes('Data &amp; Security'));
     assert.ok(html.includes('Starter Explorer'));
+    assert.ok(html.includes('AquaWatt Plus'));
+    assert.ok(html.includes('AquaWatt Business'));
     assert.ok(!html.includes('Web Development'));
     assert.ok(!html.includes('Copywriting'));
   });
@@ -122,17 +137,17 @@ describe('Support Service & Subscription Helpers', () => {
         primaryAction: { label: 'Explore Plans', href: '#subscription-plans' },
         secondaryAction: { label: 'Compare Matrix', href: '#capability-matrix' },
         stats: [
-          { value: 3, label: 'telemetry plan tiers' },
-          { value: 20, suffix: '%', label: 'annual billing savings' },
-          { value: 365, suffix: 'd', label: 'Standard Pro retention' },
+          { value: 0, prefix: '₹', label: 'Starter Explorer / month' },
+          { value: 149, prefix: '₹', label: 'AquaWatt Plus / month' },
+          { value: 499, prefix: '₹', suffix: '+', label: 'AquaWatt Business / month' },
         ],
         transfers: [
           {
-            route: 'Standard Pro · 12-Mo Annual',
-            from: { code: 'MO', symbol: 'M', amount: 12, decimals: 0 },
+            route: 'AquaWatt Plus · Analytics',
+            from: { code: 'MO', symbol: 'M', amount: 1, decimals: 0 },
             to: { code: 'INR', symbol: '₹', decimals: 0 },
-            rate: 399,
-            settled: 'Saves ₹1,200 / yr',
+            rate: 149,
+            settled: 'AI tips & FS-S401 insights',
           },
         ],
         transferTitle: 'Tariff & Plan Preview',
@@ -145,7 +160,7 @@ describe('Support Service & Subscription Helpers', () => {
     assert.ok(html.includes('data-slot="fluxpay"'));
     assert.ok(html.includes('AquaWatt'));
     assert.ok(html.includes('Transparent Utility Telemetry Plans'));
-    assert.ok(html.includes('telemetry plan tiers'));
+    assert.ok(html.includes('AquaWatt Plus / month'));
     assert.ok(html.includes('Tariff &amp; Plan Preview'));
     assert.ok(!html.includes('FluxPay'));
     assert.ok(!html.includes('Acme'));
@@ -184,5 +199,26 @@ describe('Support Service & Subscription Helpers', () => {
       React.createElement(BrandLogo, { size: 'sm', decorative: true })
     );
     assert.ok(decorativeHtml.includes('aria-hidden="true"'));
+  });
+
+  it('renders AquaWatt Footer with verified labels, valid routes, and unchanged contact email', () => {
+    const html = renderToString(
+      React.createElement(
+        MemoryRouter,
+        null,
+        React.createElement(Footer, null)
+      )
+    );
+
+    assert.ok(html.includes('Subscribe for AquaWatt Updates'));
+    assert.ok(html.includes('Need a Custom IoT Integration?'));
+    assert.ok(html.includes('mailto:aquawatt.sol@gmail.com'));
+    assert.ok(html.includes('INA219 Power Sensor'));
+    assert.ok(html.includes('FS-S401 Water Flow Sensor'));
+    assert.ok(html.includes('Multi-Device Support'));
+    assert.ok(!html.includes('24/7 Operations Desk'));
+    assert.ok(!html.includes('Municipal Partnerships'));
+    assert.ok(!html.includes('Telemetry Security Specs'));
+    assert.ok(!html.includes('Security &amp; Telemetry Docs'));
   });
 });
